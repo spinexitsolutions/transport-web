@@ -1,53 +1,45 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowUpRight } from "lucide-react";
 import { get } from "@/lib/db";
-import { fmtDate } from "@/lib/utils";
-import { PageHero } from "@/components/ui/PageHero";
-import { Reveal } from "@/components/ui/Reveal";
 import { BlogGrid } from "@/components/pages/BlogGrid";
+import { MagazineCover } from "@/components/pages/inner3/MagazineCover";
+import { NewsletterStrip } from "@/components/pages/inner3/NewsletterStrip";
 
 export const metadata: Metadata = { title: "Insights" };
 
 export default async function BlogPage() {
   const posts = (await get("posts")).filter((p) => p.published).sort((a, b) => +new Date(b.date) - +new Date(a.date));
   const [featured, ...rest] = posts;
+  const issue = 120 + posts.length;
+
   return (
     <>
-      <PageHero label="Insights" title="Notes from the" accent="control tower." subtitle="Field notes, playbooks and ideas on moving freight better — written by the people who move it." />
-      {featured && (
-        <section className="wrap pb-16">
-          <Reveal>
-            <Link href={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-[20px] bg-ink text-white lg:grid-cols-[1.4fr_1fr]">
-              <div className="relative aspect-[16/11] overflow-hidden lg:aspect-auto lg:min-h-[480px]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={featured.cover} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105" />
-              </div>
-              <div className="flex flex-col justify-between gap-10 p-6 sm:p-10">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="rounded-full bg-accent px-3 py-1 font-medium text-accent-ink">Featured</span>
-                    <span className="rounded-full bg-white/10 px-3 py-1">{featured.category}</span>
-                  </div>
-                  <h2 className="display mt-6 text-[clamp(2rem,4vw,3.25rem)] text-balance">{featured.title}</h2>
-                  <p className="mt-4 text-white/65">{featured.excerpt}</p>
-                </div>
-                <div className="flex items-center justify-between font-mono text-xs text-white/55">
-                  <span>
-                    {featured.author} · {fmtDate(featured.date)} · {featured.readTime} min
-                  </span>
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-signal">
-                    <ArrowUpRight size={18} />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </Reveal>
+      {featured ? (
+        <MagazineCover featured={featured} lines={rest} issue={issue} />
+      ) : (
+        <section className="wrap py-24">
+          <h1 className="board text-[clamp(5rem,20vw,14rem)]">Dispatch</h1>
+          <p className="text-muted">No posts yet. Check back soon.</p>
         </section>
       )}
-      <section className="wrap pb-28">
-        {rest.length > 0 ? <BlogGrid posts={rest} /> : !featured && <p className="text-muted">No posts yet. Check back soon.</p>}
-      </section>
+
+      {posts.length > 0 && (
+        <section data-nav-label="Archive" className="wrap pb-24 pt-10 sm:pt-16">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="eyebrow flex items-center gap-3 text-muted">
+                <span className="cross text-accent" /> The archive
+              </div>
+              <h2 className="display mt-3 text-[clamp(2.2rem,6vw,5rem)]">
+                Every <span className="hl">issue,</span> indexed.
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm text-muted">Field notes, playbooks and ideas on moving freight better — written by the people who move it.</p>
+          </div>
+          <BlogGrid posts={posts} />
+        </section>
+      )}
+
+      <NewsletterStrip />
     </>
   );
 }
