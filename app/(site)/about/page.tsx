@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Compass, HeartHandshake, Leaf, Zap } from "lucide-react";
 import { get } from "@/lib/db";
 import { img } from "@/lib/seed";
-import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { Counter } from "@/components/ui/Counter";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Marquee } from "@/components/ui/Marquee";
 import { Button } from "@/components/ui/Button";
+import { SplitWords } from "@/components/ui/SplitWords";
 import { ImageReveal } from "@/components/pages/ImageReveal";
+import { Odometer } from "@/components/pages/inner2/Odometer";
+import { Logbook } from "@/components/pages/inner2/Logbook";
+import { ValueTiles } from "@/components/pages/inner2/ValueTiles";
 
 export const metadata: Metadata = { title: "About" };
 
@@ -28,120 +29,148 @@ const TEAM = [
   { name: "Arnav Bhatt", role: "CTO", id: "1500648767791-00dcc994a43e" },
 ];
 
+const CODE: Record<string, string> = {
+  Mumbai: "BOM", Delhi: "DEL", Bengaluru: "BLR", Kolkata: "CCU", Dubai: "DXB", Singapore: "SIN",
+  Rotterdam: "RTM", "New York": "JFK", Shanghai: "PVG", Nairobi: "NBO", Sydney: "SYD",
+};
+
 export default async function AboutPage() {
   const [settings, stats, hubs] = await Promise.all([get("settings"), get("stats"), get("hubs")]);
   return (
     <>
-      <PageHero label={`About ${settings.brandName}`} title="We move freight." accent="Quietly. Perfectly." subtitle={`${settings.brandName} began with a simple idea: logistics should feel invisible to the people who depend on it.`} />
+      {/* ── HERO: odometer ── */}
+      <section data-nav-label="Odometer" className="relative overflow-hidden bg-accent text-accent-ink">
+        <div className="noise absolute inset-0" />
+        <div className="wrap relative flex min-h-[92svh] flex-col justify-between gap-10 pb-10 pt-10 sm:pt-16 lg:pt-24">
+          <div className="flex items-center justify-between border-b border-white/20 pb-4">
+            <span className="eyebrow flex items-center gap-3 text-white/75">
+              <span className="cross text-signal" /> About {settings.brandName} · odometer
+            </span>
+            <span className="barcode hidden h-6 w-28 text-white/70 sm:block" />
+          </div>
 
-      <section className="px-2 sm:px-4">
-        <ImageReveal src={img("1600880292203-757bb62b4baf", 2400)} alt="The Kinetik team at work" priority className="aspect-[4/5] rounded-[20px] sm:aspect-[21/9] sm:rounded-[40px]" />
-      </section>
-
-      <section className="wrap grid gap-10 py-20 sm:py-32 lg:grid-cols-[1fr_1.6fr]">
-        <SectionLabel index="01">Our story</SectionLabel>
-        <div className="space-y-8">
-          <Reveal>
-            <p className="text-[clamp(1.6rem,3.6vw,2.75rem)] leading-[1.15] tracking-tight text-balance">
-              In 2012 we watched a client lose a festive season because a single truck went silent for three days. <span className="text-muted">We decided nobody should ever have to wonder where their freight is again.</span>
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="max-w-2xl text-lg text-muted">
-              Today {settings.brandName} is a multimodal logistics company that combines its own fleet, warehouses and a 24×7 control tower with software we build in-house. We obsess over the boring details — paperwork, packaging, pickup windows — so our customers can obsess over their own.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="bg-ink py-20 text-white sm:py-28">
-        <div className="wrap grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <Reveal key={s.id} delay={i * 0.08} className="border-t border-white/15 pt-6">
-              <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} className="display block text-[clamp(2.75rem,7vw,5.5rem)]" />
-              <p className="mt-3 text-white/55">{s.label}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="wrap py-20 sm:py-32">
-        <SectionLabel index="02">What we believe</SectionLabel>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { icon: Zap, t: "Speed is a feature", d: "Every hour saved is cash freed for our customers." },
-            { icon: Compass, t: "Radical visibility", d: "If we know it, you know it — in real time." },
-            { icon: HeartHandshake, t: "Partners, not vendors", d: "We win when our customers' customers are happy." },
-            { icon: Leaf, t: "Lighter footprint", d: "Electric-first last mile and rail-first long haul." },
-          ].map(({ icon: I, t, d }, i) => (
-            <Reveal key={t} delay={i * 0.07} className="group rounded-[20px] bg-white p-6 ring-1 ring-line transition-colors duration-500 hover:bg-ink hover:text-white">
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-bone text-ink transition-colors duration-500 group-hover:bg-accent group-hover:text-accent-ink">
-                <I size={20} />
-              </span>
-              <h3 className="mt-10 text-xl font-medium tracking-tight">{t}</h3>
-              <p className="mt-2 text-muted transition-colors group-hover:text-white/60">{d}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="wrap pb-20 sm:pb-32">
-        <SectionLabel index="03">Milestones</SectionLabel>
-        <ol className="mt-12 border-t border-line">
-          {MILESTONES.map((m, i) => (
-            <Reveal key={m.y} delay={i * 0.04}>
-              <li className="group grid gap-2 border-b border-line py-8 sm:grid-cols-[1fr_2fr_2fr] sm:items-baseline sm:gap-8">
-                <span className="display text-5xl text-ink/20 transition-colors duration-500 group-hover:text-accent sm:text-6xl">{m.y}</span>
-                <h3 className="text-2xl font-medium tracking-tight sm:text-3xl">{m.t}</h3>
-                <p className="text-muted">{m.d}</p>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </section>
-
-      <section className="wrap pb-20 sm:pb-32">
-        <div className="flex items-end justify-between gap-6">
           <div>
-            <SectionLabel index="04">Leadership</SectionLabel>
-            <h2 className="display mt-5 text-[clamp(2.25rem,6vw,4.5rem)]">
-              The people <span className="hl-soft">behind the</span> pallets.
-            </h2>
+            <div className="eyebrow text-white/60">Kilometres since</div>
+            <div className="board mt-3 flex flex-wrap items-center gap-x-[0.15em] text-[clamp(5.5rem,24vw,22rem)] leading-[0.82]">
+              <span className="text-white/35">2012</span>
+              <span className="text-signal">→</span>
+              <Odometer from={2012} to={2026} className="text-white" />
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+            <h1 className="display text-[clamp(2.4rem,6.4vw,5.6rem)] lg:col-span-8">
+              <SplitWords text="We move freight." animateOnMount />{" "}
+              <SplitWords text="Quietly. Perfectly." wordClassName="hl" animateOnMount delay={0.2} />
+            </h1>
+            <p className="max-w-md text-lg text-white/75 lg:col-span-4">
+              {settings.brandName} began with a simple idea: logistics should feel invisible to the people who depend on it.
+            </p>
           </div>
         </div>
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {TEAM.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.07} className="group">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-ink/5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img(p.id, 800)} alt={p.name} loading="lazy" className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+      </section>
+
+      {/* ── story: big statement over image ── */}
+      <section data-nav-label="Our story" className="wrap grid gap-8 py-16 sm:py-24 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-5">
+          <ImageReveal src={img("1600880292203-757bb62b4baf", 1600)} alt="The Kinetik team at work" priority className="aspect-[4/5] rounded-[18px]" />
+        </div>
+        <div className="flex flex-col justify-between gap-10 lg:col-span-7">
+          <Reveal>
+            <span className="board text-[clamp(4rem,10vw,8rem)] text-accent">“</span>
+            <p className="-mt-8 text-[clamp(1.6rem,3.4vw,2.7rem)] font-medium leading-[1.15] tracking-tight">
+              In 2012 we watched a client lose a festive season because a single truck went silent for three days.{" "}
+              <span className="text-muted">We decided nobody should ever have to wonder where their freight is again.</span>
+            </p>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 border-t border-line pt-8">
+            {stats.map((s) => (
+              <div key={s.id}>
+                <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} className="board block text-[clamp(3rem,7vw,5rem)]" />
+                <p className="mt-1 text-sm text-muted">{s.label}</p>
               </div>
-              <h3 className="mt-4 font-medium">{p.name}</h3>
-              <p className="text-sm text-muted">{p.role}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── logbook ── */}
+      <section data-nav-label="Logbook" className="border-y border-line bg-bone">
+        <Logbook items={MILESTONES} />
+      </section>
+
+      {/* ── values ── */}
+      <section data-nav-label="What we believe" className="bg-signal py-16 text-ink sm:py-24">
+        <div className="wrap">
+          <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+            <h2 className="display text-[clamp(2.4rem,6vw,5rem)]">
+              Four rules <br className="hidden sm:block" />
+              we don&apos;t bend.
+            </h2>
+            <p className="max-w-xs text-ink/70">Written on the wall of our control tower — and on every SOP we ship.</p>
+          </div>
+          <div className="mt-10">
+            <ValueTiles />
+          </div>
+        </div>
+      </section>
+
+      {/* ── leadership strip ── */}
+      <section data-nav-label="Leadership" className="bg-night py-16 text-white sm:py-24">
+        <div className="wrap">
+          <div className="eyebrow flex items-center gap-3 text-white/60">
+            <span className="cross text-signal" /> Crew manifest
+          </div>
+          <h2 className="display mt-4 text-[clamp(2.2rem,5.5vw,4.4rem)]">
+            The people behind <span className="hl">the pallets.</span>
+          </h2>
+        </div>
+        <div className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-1 overflow-x-auto px-4 sm:px-6 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-10">
+          {TEAM.map((p, i) => (
+            <Reveal key={p.name} delay={i * 0.08} className="group w-[72vw] shrink-0 snap-start sm:w-[44vw] lg:w-auto">
+              <div className="relative aspect-[3/4] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img(p.id, 800)} alt={p.name} loading="lazy" className="h-full w-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent" />
+                <span className="board absolute right-3 top-3 text-xl text-white/60">CREW 0{i + 1}</span>
+                <div className="absolute inset-x-4 bottom-4">
+                  <h3 className="board text-[clamp(2.2rem,4vw,3.2rem)] leading-[0.9]">{p.name}</h3>
+                  <p className="mt-1 text-sm text-signal">{p.role}</p>
+                </div>
+              </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-line py-10">
-        <Marquee duration={50}>
+      {/* ── hubs marquee ── */}
+      <section data-nav-label="Hubs" className="overflow-hidden bg-ink py-8 text-white">
+        <Marquee duration={40}>
           {hubs.map((h) => (
-            <span key={h.id} className="flex items-center gap-6 px-6">
-              <span className="display text-[clamp(2.5rem,7vw,5rem)]">{h.city}</span>
-              <span className="hl-soft text-[clamp(1.5rem,4vw,2.5rem)] text-muted">{h.country}</span>
-              <span className="h-3 w-3 rounded-full bg-accent" />
+            <span key={h.id} className="flex items-center gap-4 px-6 sm:px-10">
+              <span className="board text-[clamp(4rem,10vw,7.5rem)] text-signal">{CODE[h.city] ?? h.city.slice(0, 3).toUpperCase()}</span>
+              <span className="flex flex-col">
+                <span className="text-lg font-medium">{h.city}</span>
+                <span className="eyebrow text-white/50">{h.country}</span>
+              </span>
+              <span className="cross ml-6 text-white/30" />
             </span>
           ))}
         </Marquee>
       </section>
 
-      <section className="wrap py-20 text-center sm:py-32">
-        <h2 className="display mx-auto max-w-4xl text-[clamp(2.25rem,6vw,5rem)]">
-          Want to build the future of <span className="hl">freight</span> with us?
-        </h2>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button href="/careers">See open roles</Button>
-          <Button href="/contact" variant="ghost">Partner with us</Button>
+      {/* ── closing ── */}
+      <section data-nav-label="Join us" className="wrap py-16 sm:py-24">
+        <div className="grid gap-8 border-t-2 border-ink pt-8 lg:grid-cols-12 lg:items-end">
+          <h2 className="display text-[clamp(2.2rem,6vw,5rem)] lg:col-span-8">
+            Want to build the future of <span className="hl">freight</span> with us?
+          </h2>
+          <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
+            <Button href="/careers">See open roles</Button>
+            <Button href="/contact" variant="ghost">
+              Partner with us
+            </Button>
+          </div>
         </div>
       </section>
     </>

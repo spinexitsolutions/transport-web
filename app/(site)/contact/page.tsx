@@ -1,74 +1,101 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { get } from "@/lib/db";
-import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { SplitWords } from "@/components/ui/SplitWords";
 import { ContactForm } from "@/components/pages/ContactForm";
+import { OpenNow } from "@/components/pages/inner2/OpenNow";
 
 export const metadata: Metadata = { title: "Contact" };
 
 export default async function ContactPage() {
   const s = await get("settings");
   const wa = s.whatsapp.replace(/[^\d]/g, "");
-  const cards = [
-    { icon: Phone, k: "Call us", v: s.phone, href: `tel:${s.phone.replace(/\s/g, "")}` },
-    { icon: Mail, k: "Email", v: s.email, href: `mailto:${s.email}` },
-    { icon: MessageCircle, k: "WhatsApp", v: s.whatsapp, href: `https://wa.me/${wa}` },
-    { icon: Clock, k: "Hours", v: s.hours },
+  const channels = [
+    { code: "CALL", k: "Speak to dispatch", v: s.phone, href: `tel:${s.phone.replace(/\s/g, "")}` },
+    { code: "WAPP", k: "WhatsApp the tower", v: s.whatsapp, href: `https://wa.me/${wa}` },
+    { code: "MAIL", k: "Write to us", v: s.email, href: `mailto:${s.email}` },
+    { code: "VISIT", k: "Headquarters", v: s.address, href: "#map" },
   ];
   return (
     <>
-      <PageHero label="Contact" title="Let's talk" accent="freight." subtitle="Whether it's one pallet or a thousand containers, a real human will get back to you within the hour." />
+      <section data-nav-label="Dispatch desk" className="grid lg:grid-cols-2">
+        {/* left: lime desk */}
+        <div className="relative overflow-hidden bg-signal text-ink">
+          <div className="wrap flex h-full flex-col gap-10 pb-12 pt-10 sm:pt-16 lg:max-w-none lg:pb-16 lg:pr-10 lg:pt-24">
+            <span className="eyebrow flex items-center gap-3 text-ink/70">
+              <span className="cross text-accent" /> Contact · dispatch desk
+            </span>
+            <h1 className="display text-[clamp(3rem,9vw,6.6rem)]">
+              <SplitWords text="Let's talk" animateOnMount />
+              <br />
+              <SplitWords text="freight." wordClassName="text-accent" animateOnMount delay={0.15} />
+            </h1>
+            <OpenNow />
+            <ul className="border-t-2 border-ink">
+              {channels.map((c, i) => (
+                <Reveal key={c.code} delay={0.1 + i * 0.06}>
+                  <li className="border-b border-ink/20">
+                    <a
+                      href={c.href}
+                      target={c.href.startsWith("http") ? "_blank" : undefined}
+                      rel="noreferrer"
+                      className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-4 transition-colors sm:grid-cols-[6rem_1fr_auto]"
+                    >
+                      <span className="board text-3xl transition-colors group-hover:text-accent sm:text-4xl">{c.code}</span>
+                      <span className="min-w-0">
+                        <span className="eyebrow block text-ink/60">{c.k}</span>
+                        <span className="mt-1 block truncate text-[17px] font-medium sm:text-lg">{c.v}</span>
+                      </span>
+                      <span className="grid h-11 w-11 place-items-center rounded-full bg-ink text-white transition-all duration-500 group-hover:rotate-45 group-hover:bg-accent">
+                        <ArrowUpRight size={18} />
+                      </span>
+                    </a>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-      <section className="wrap grid gap-4 pb-6 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map(({ icon: I, k, v, href }, i) => {
-          const inner = (
-            <>
-              <div className="flex items-center justify-between">
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-bone transition-colors duration-500 group-hover:bg-accent group-hover:text-accent-ink">
-                  <I size={19} />
-                </span>
-                {href && <ArrowUpRight size={18} className="text-muted transition-transform duration-500 group-hover:rotate-45" />}
-              </div>
-              <div className="mt-8 text-sm text-muted">{k}</div>
-              <div className="mt-1 font-medium break-words">{v}</div>
-            </>
-          );
-          return (
-            <Reveal key={k} delay={i * 0.06}>
-              {href ? (
-                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="group block h-full rounded-[20px] bg-white p-6 ring-1 ring-line transition-shadow hover:shadow-[0_30px_60px_-35px_rgba(0,0,0,.35)]">
-                  {inner}
-                </a>
-              ) : (
-                <div className="group h-full rounded-[20px] bg-white p-6 ring-1 ring-line">{inner}</div>
-              )}
+        {/* right: ticket */}
+        <div className="bg-bone">
+          <div className="wrap py-10 sm:py-16 lg:max-w-none lg:pl-10 lg:pt-24">
+            <p className="mb-6 max-w-md text-muted">
+              Whether it&apos;s one pallet or a thousand containers — fill the ticket and a real human from the control tower replies within the hour.
+            </p>
+            <Reveal>
+              <ContactForm />
             </Reveal>
-          );
-        })}
+          </div>
+        </div>
       </section>
 
-      <section className="wrap grid gap-4 pb-28 lg:grid-cols-[1.2fr_1fr]">
-        <Reveal>
-          <ContactForm />
-        </Reveal>
-        <Reveal delay={0.1} className="flex flex-col overflow-hidden rounded-[20px] bg-ink text-white">
-          <iframe
-            title="Office location map"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=72.855%2C19.055%2C72.880%2C19.075&layer=mapnik&marker=19.0650%2C72.8680"
-            className="h-72 w-full grayscale-[0.6] sm:h-auto sm:min-h-[360px] sm:flex-1"
-            loading="lazy"
-          />
-          <div className="p-6 sm:p-8">
-            <div className="flex items-start gap-3">
-              <MapPin size={18} className="mt-1 shrink-0 text-accent" />
-              <div>
-                <div className="eyebrow text-white/45">Headquarters</div>
-                <p className="mt-2 text-lg">{s.address}</p>
-              </div>
+      <section id="map" data-nav-label="Find us" className="bg-ink py-12 text-white sm:py-16">
+        <div className="wrap grid gap-6 lg:grid-cols-12 lg:items-stretch">
+          <div className="flex flex-col justify-between gap-6 lg:col-span-4">
+            <div>
+              <span className="eyebrow flex items-center gap-3 text-white/60">
+                <span className="cross text-signal" /> Headquarters
+              </span>
+              <div className="board mt-4 text-[clamp(4rem,10vw,7rem)] text-signal">BOM · HQ</div>
+              <p className="mt-4 flex items-start gap-2 text-lg text-white/80">
+                <MapPin size={18} className="mt-1.5 shrink-0 text-signal" />
+                {s.address}
+              </p>
             </div>
+            <div className="text-white/50">{s.hours}</div>
           </div>
-        </Reveal>
+          <div className="relative overflow-hidden rounded-[16px] bg-deep ring-1 ring-white/10 lg:col-span-8">
+            <iframe
+              title="Office location map"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=72.855%2C19.055%2C72.880%2C19.075&layer=mapnik&marker=19.0650%2C72.8680"
+              className="h-72 w-full grayscale-[0.7] sm:h-[420px]"
+              loading="lazy"
+            />
+            <span className="eyebrow pointer-events-none absolute left-3 top-3 rounded-md bg-ink/85 px-2.5 py-1.5 text-white">19.065° N · 72.868° E</span>
+          </div>
+        </div>
       </section>
     </>
   );
