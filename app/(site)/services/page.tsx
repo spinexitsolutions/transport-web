@@ -1,101 +1,143 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowUpRight, Clock } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { get } from "@/lib/db";
-import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
-import { Button } from "@/components/ui/Button";
-import { SectionLabel } from "@/components/ui/SectionLabel";
+import { SplitWords } from "@/components/ui/SplitWords";
+import { ImageReveal } from "@/components/pages/ImageReveal";
+import { TransitMap } from "@/components/pages/inner1/TransitMap";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Services" };
 
+const TONES = [
+  { bg: "bg-bone", text: "text-ink", sub: "text-muted", line: "border-line", chip: "bg-white ring-line" },
+  { bg: "bg-tint", text: "text-ink", sub: "text-ink/60", line: "border-ink/15", chip: "bg-white/70 ring-ink/10" },
+  { bg: "bg-ink", text: "text-white", sub: "text-white/55", line: "border-white/15", chip: "bg-white/10 ring-white/10" },
+];
+
 export default async function ServicesPage() {
   const services = (await get("services")).filter((s) => s.published);
-  const [first, second, ...rest] = services;
+  const count = String(services.length).padStart(2, "0");
 
   return (
     <>
-      <PageHero
-        label="Services"
-        title="Every mode."
-        accent="One partner."
-        subtitle="Road, air, ocean, rail and warehousing — designed to work as one network, priced transparently and tracked to the minute."
-      />
+      {/* ── hero: mode selector ── */}
+      <section data-nav-label="Modes" className="relative overflow-hidden bg-ink pb-14 pt-8 text-white sm:pb-20 sm:pt-14 lg:pt-24">
+        <div className="noise absolute inset-0" />
+        <div className="wrap relative">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <span className="eyebrow flex items-center gap-3 text-white/60">
+              <span className="cross text-signal" /> Services · network map
+            </span>
+            <span className="barcode h-6 w-24 text-white/60" aria-hidden />
+          </div>
 
-      <section className="wrap pb-24">
-        <div className="grid gap-4 lg:grid-cols-2">
-          {[first, second].filter(Boolean).map((s, i) => (
-            <Reveal key={s.id} delay={i * 0.08}>
-              <Link href={`/services/${s.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-ink text-white sm:aspect-[16/12]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-8">
-                  <span className="glass-dark grid h-12 w-12 place-items-center rounded-2xl text-signal">
-                    <Icon name={s.icon} size={22} />
-                  </span>
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-accent group-hover:text-accent-ink">
-                    <ArrowUpRight size={20} />
-                  </span>
-                </div>
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
-                  <div className="eyebrow text-white/50">0{i + 1}</div>
-                  <h2 className="display mt-2 text-4xl sm:text-6xl">{s.title}</h2>
-                  <p className="mt-3 max-w-md text-white/70">{s.short}</p>
-                  <div className="mt-5 flex flex-wrap gap-2 text-sm">
-                    <span className="glass-dark rounded-full px-3 py-1.5">
-                      <Clock size={13} className="mr-1.5 inline" />
-                      {s.transitTime}
-                    </span>
-                    <span className="rounded-full bg-accent px-3 py-1.5 text-accent-ink">from ₹{s.startingPrice.toLocaleString("en-IN")}/{s.priceUnit || "kg"}</span>
-                  </div>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+          <div className="mt-8 grid items-end gap-8 lg:grid-cols-12">
+            <h1 className="lg:col-span-8">
+              <span className="board block text-[clamp(7rem,30vw,20rem)] leading-[0.78] text-signal">
+                <SplitWords text={count} animateOnMount />
+              </span>
+              <span className="display mt-2 block text-[clamp(2.4rem,7vw,5.6rem)]">
+                <SplitWords text="modes. One" animateOnMount delay={0.15} /> <SplitWords text="network." wordClassName="hl" animateOnMount delay={0.3} />
+              </span>
+            </h1>
+            <p className="max-w-sm text-white/60 lg:col-span-4 lg:pb-4">
+              Road, air, ocean, rail, warehousing and the last mile — each one a station on the same line, priced transparently and tracked to the minute. Pick a stop.
+            </p>
+          </div>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((s, i) => (
-            <Reveal key={s.id} delay={(i % 3) * 0.08}>
-              <Link href={`/services/${s.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[20px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-40px_rgba(0,0,0,.35)]">
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={s.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]" />
-                  <span className="glass absolute top-4 left-4 grid h-10 w-10 place-items-center rounded-xl">
-                    <Icon name={s.icon} size={18} />
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-2xl font-medium tracking-tight">{s.title}</h3>
-                    <ArrowUpRight size={20} className="mt-1 shrink-0 text-muted transition-all duration-500 group-hover:rotate-45 group-hover:text-accent" />
-                  </div>
-                  <p className="mt-2 text-muted">{s.short}</p>
-                  <div className="mt-auto flex items-center justify-between pt-6 font-mono text-xs text-muted">
-                    <span>{s.transitTime}</span>
-                    <span className="text-ink">from ₹{s.startingPrice.toLocaleString("en-IN")}/{s.priceUnit || "kg"}</span>
-                  </div>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+          <div className="mt-14">
+            <TransitMap stations={services.map((s) => ({ slug: s.slug, title: s.title, icon: s.icon, transitTime: s.transitTime }))} />
+          </div>
         </div>
       </section>
 
-      <section className="wrap pb-28">
-        <Reveal className="relative overflow-hidden rounded-[20px] bg-ink px-6 py-14 text-white sm:px-12 sm:py-20">
-          <div className="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/30 blur-[120px]" />
-          <SectionLabel dark>Not sure which mode?</SectionLabel>
-          <h2 className="display mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4.5rem)]">
-            Tell us the cargo. We&apos;ll design the <span className="hl">route.</span>
+      {/* ── one band per service ── */}
+      {services.map((s, i) => {
+        const t = TONES[i % TONES.length];
+        const flip = i % 2 === 1;
+        return (
+          <section key={s.id} id={`svc-${s.slug}`} data-nav-label={s.title} className={cn("relative scroll-mt-4", t.bg, t.text)}>
+            <div className="wrap grid gap-8 py-14 sm:py-20 lg:grid-cols-12 lg:gap-12 lg:py-24">
+              <div className={cn("lg:col-span-6", flip && "lg:order-2")}>
+                <ImageReveal src={s.image} alt={s.title} className="aspect-[4/3] rounded-[16px] lg:aspect-[5/4]" />
+              </div>
+
+              <Reveal className={cn("flex flex-col lg:col-span-6", flip && "lg:order-1")}>
+                {/* spec header */}
+                <div className={cn("flex items-center justify-between border-b pb-3", t.line)}>
+                  <span className="flex items-center gap-3">
+                    <span className="board text-4xl text-accent">{String(i + 1).padStart(2, "0")}</span>
+                    <span className={cn("eyebrow", t.sub)}>Station · SVC-{String(i + 1).padStart(2, "0")}</span>
+                  </span>
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-ink">
+                    <Icon name={s.icon} size={20} />
+                  </span>
+                </div>
+
+                <h2 className="display mt-6 text-[clamp(2.4rem,5vw,4.4rem)]">{s.title}</h2>
+                <p className={cn("mt-4 max-w-lg text-lg", t.sub)}>{s.description}</p>
+
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {s.features.map((f) => (
+                    <li key={f} className={cn("flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm ring-1", t.chip)}>
+                      <Check size={13} className="text-accent" /> {f}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* spec table */}
+                <dl className={cn("mt-8 grid grid-cols-2 border-y", t.line)}>
+                  <div className="py-4 pr-4">
+                    <dt className={cn("eyebrow", t.sub)}>Transit</dt>
+                    <dd className="board mt-1 text-3xl sm:text-4xl">{s.transitTime}</dd>
+                  </div>
+                  <div className={cn("border-l py-4 pl-4", t.line)}>
+                    <dt className={cn("eyebrow", t.sub)}>From</dt>
+                    <dd className="board mt-1 text-3xl sm:text-4xl">
+                      ₹{s.startingPrice.toLocaleString("en-IN")}
+                      <span className={cn("ml-1 text-base", t.sub)}>/{s.priceUnit || "kg"}</span>
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link
+                    href={`/services/${s.slug}`}
+                    className="group inline-flex h-12 items-center gap-3 rounded-full bg-accent pl-6 pr-1.5 font-medium text-accent-ink"
+                  >
+                    Explore {s.title}
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-signal text-ink transition-transform duration-500 group-hover:rotate-45">
+                      <ArrowUpRight size={16} />
+                    </span>
+                  </Link>
+                  <Link href="/quote" className={cn("inline-flex h-12 items-center rounded-full px-6 font-medium ring-1", t.line, i % 3 === 2 ? "ring-white/25" : "ring-ink/20")}>
+                    Get a rate
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
+          </section>
+        );
+      })}
+
+      {/* ── end of line ── */}
+      <section data-nav-label="End of line" className="bg-signal">
+        <div className="wrap flex flex-col gap-6 py-14 sm:flex-row sm:items-center sm:justify-between sm:py-20">
+          <h2 className="board text-[clamp(3.4rem,9vw,7rem)] leading-[0.85]">
+            Not sure which mode?
+            <br />
+            <span className="text-accent">We&apos;ll route it.</span>
           </h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button href="/quote" variant="accent">Get instant quote</Button>
-            <Button href="/contact" variant="ghost" className="text-white">Talk to an expert</Button>
-          </div>
-        </Reveal>
+          <Link href="/contact" className="group inline-flex h-14 items-center gap-3 self-start rounded-full bg-ink pl-7 pr-2 font-medium text-white sm:self-auto">
+            Talk to a planner
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-accent transition-transform duration-500 group-hover:rotate-45">
+              <ArrowUpRight size={18} />
+            </span>
+          </Link>
+        </div>
       </section>
     </>
   );

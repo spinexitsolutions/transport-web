@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Loader2, ShieldCheck, Zap } from "lucide-react";
 import { CITY_DISTANCE, cn, distanceKm, estimatePrice, inr } from "@/lib/utils";
 import { Counter } from "@/components/ui/Counter";
+import { Zigzag } from "@/components/pages/inner1/Zigzag";
 
 type Svc = { title: string; startingPrice: number };
 
@@ -30,28 +31,31 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
     [svc.startingPrice, weight, km, express, insurance],
   );
 
+  // dark = console card for dark sections; light = paper rate card / receipt
   const t = dark
     ? {
-        panel: "bg-white/[0.04] ring-1 ring-white/10 text-white",
+        panel: "bg-white/[0.04] ring-1 ring-white/10 text-white rounded-[20px]",
         sub: "text-white/55",
         chip: "bg-white/5 text-white/80 ring-white/10 hover:bg-white/10",
-        chipOn: "bg-white text-ink ring-white",
+        chipOn: "bg-signal text-ink ring-signal",
         field: "bg-white/5 border-white/10 text-white placeholder:text-white/35 focus:border-white [&>option]:text-ink",
-        summary: "bg-white text-ink",
+        summary: "bg-white text-ink rounded-t-2xl",
         line: "border-white/10",
       }
     : {
-        panel: "bg-white ring-1 ring-line text-ink shadow-[0_30px_80px_-40px_rgba(0,0,0,.25)]",
+        panel: "bg-white text-ink shadow-[0_40px_80px_-40px_rgba(11,13,23,.35)]",
         sub: "text-muted",
         chip: "bg-bone text-ink/80 ring-line hover:bg-bone-2",
-        chipOn: "bg-ink text-white ring-ink",
+        chipOn: "bg-accent text-accent-ink ring-accent",
         field: "bg-bone/60 border-line text-ink placeholder:text-ink/35 focus:border-ink",
-        summary: "bg-ink text-white",
+        summary: "bg-tint text-ink rounded-t-xl",
         line: "border-line",
       };
+  const grid = dark ? "grid gap-6 lg:grid-cols-[1.25fr_1fr] lg:gap-8" : "grid gap-6";
+  const summaryEdge = dark ? "#ffffff" : "var(--tint)";
 
   const fieldCls = cn(
-    "w-full rounded-2xl border px-4 py-3.5 text-[15px] outline-none transition-colors",
+    "w-full rounded-xl border px-4 py-3.5 text-[15px] outline-none transition-colors",
     t.field,
   );
 
@@ -99,7 +103,17 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
   };
 
   return (
-    <div className={cn("overflow-hidden rounded-[20px] p-4 sm:p-6 lg:p-8", t.panel)}>
+    <div className="relative">
+      {!dark && <Zigzag flip />}
+      <div className={cn("overflow-hidden p-4 sm:p-6 lg:p-8", t.panel)}>
+      {/* rate-card header */}
+      <div className={cn("mb-5 flex items-center justify-between gap-3 border-b border-dashed pb-4", dark ? "border-white/15" : "border-ink/20")}>
+        <div>
+          <div className="board text-2xl leading-none sm:text-3xl">{dark ? "Rate card · live" : "Kinetik rate card"}</div>
+          <div className={cn("eyebrow mt-1", t.sub)}>No. KQ-{(km * 7 + weight).toString().slice(-5).padStart(5, "0")} · GST incl.</div>
+        </div>
+        <span className={cn("barcode h-8 w-20 shrink-0 sm:w-28", dark ? "text-white/70" : "text-ink")} aria-hidden />
+      </div>
       {/* stepper */}
       <div className="mb-6 flex items-center gap-2">
         {["Shipment", "Details", "Done"].map((label, i) => (
@@ -112,8 +126,9 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
-            <span className={cn("eyebrow !text-[0.62rem]", step >= i ? "" : t.sub)}>
-              0{i + 1} · {label}
+            <span className={cn("flex items-baseline gap-1.5", step >= i ? "" : t.sub)}>
+              <span className="board text-lg leading-none">0{i + 1}</span>
+              <span className="eyebrow !text-[0.6rem]">{label}</span>
             </span>
           </div>
         ))}
@@ -121,7 +136,7 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
 
       <AnimatePresence mode="wait" initial={false}>
         {step === 0 && (
-          <motion.div key="s0" {...slide} className="grid gap-6 lg:grid-cols-[1.25fr_1fr] lg:gap-8">
+          <motion.div key="s0" {...slide} className={grid}>
             <div className="space-y-6">
               <fieldset>
                 <legend className={cn("mb-3 text-sm", t.sub)}>Service</legend>
@@ -174,7 +189,7 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
                     value={weight}
                     aria-label="Weight in kilograms"
                     onChange={(e) => setWeight(Math.max(1, Math.min(100000, Number(e.target.value) || 1)))}
-                    className={cn("w-28 rounded-xl border px-3 py-1.5 text-right font-mono text-sm outline-none", t.field)}
+                    className={cn("w-28 rounded-lg border px-3 py-1.5 text-right font-mono text-sm outline-none", t.field)}
                   />
                 </div>
                 <input
@@ -196,15 +211,19 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
             </div>
 
             {/* live summary */}
-            <div className={cn("flex flex-col justify-between rounded-3xl p-5 sm:p-6", t.summary)}>
+            <div>
+            <div className={cn("flex flex-col justify-between p-5 sm:p-6", t.summary)}>
               <div>
-                <div className="eyebrow opacity-60">Estimated total</div>
-                <motion.div key={price.total} initial={{ opacity: 0.4, y: 6 }} animate={{ opacity: 1, y: 0 }} className="display mt-3 text-[clamp(2.25rem,6vw,3.25rem)]">
+                <div className="flex items-center justify-between">
+                  <span className="eyebrow opacity-60">Estimated total</span>
+                  <span className="eyebrow rounded-sm border border-current/30 px-1.5 py-0.5 opacity-70">Held 48h</span>
+                </div>
+                <motion.div key={price.total} initial={{ opacity: 0.4, y: 6 }} animate={{ opacity: 1, y: 0 }} className="board mt-3 text-[clamp(3.2rem,8vw,4.6rem)] tracking-tight">
                   {inr(price.total)}
                 </motion.div>
                 <div className="mt-1 text-sm opacity-60">incl. 18% GST · {km.toLocaleString("en-IN")} km</div>
 
-                <dl className="mt-6 space-y-2.5 text-sm">
+                <dl className="mt-6 space-y-2.5 border-t border-dashed border-current/25 pt-4 text-sm">
                   <Row k="Base freight" v={inr(price.base)} />
                   <Row k="Distance & handling" v={inr(price.subtotal - price.base)} />
                   <Row k="GST (18%)" v={inr(price.gst)} />
@@ -219,11 +238,13 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
               </button>
             </div>
+            <Zigzag color={summaryEdge} />
+            </div>
           </motion.div>
         )}
 
         {step === 1 && (
-          <motion.form key="s1" {...slide} onSubmit={submit} className="grid gap-6 lg:grid-cols-[1.25fr_1fr] lg:gap-8">
+          <motion.form key="s1" {...slide} onSubmit={submit} className={grid}>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {(
                 [
@@ -257,16 +278,17 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
               {error && <p className="text-sm text-red-500 sm:col-span-2">{error}</p>}
             </div>
 
-            <div className={cn("flex flex-col justify-between gap-6 rounded-3xl p-5 sm:p-6", t.summary)}>
+            <div>
+            <div className={cn("flex flex-col justify-between gap-6 p-5 sm:p-6", t.summary)}>
               <div className="space-y-2.5 text-sm">
                 <div className="eyebrow opacity-60">Your shipment</div>
                 <Row k="Service" v={service} />
                 <Row k="Route" v={`${origin} → ${destination}`} />
                 <Row k="Weight" v={`${weight.toLocaleString("en-IN")} kg`} />
                 <Row k="Options" v={[express && "Express", insurance && "Insured"].filter(Boolean).join(", ") || "Standard"} />
-                <div className="!mt-4 flex items-baseline justify-between border-t border-current/15 pt-4">
+                <div className="!mt-4 flex items-baseline justify-between border-t border-dashed border-current/25 pt-4">
                   <span className="opacity-60">Estimate</span>
-                  <span className="display text-2xl">{inr(price.total)}</span>
+                  <span className="board text-4xl">{inr(price.total)}</span>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -288,6 +310,8 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
                 </button>
               </div>
             </div>
+            <Zigzag color={summaryEdge} />
+            </div>
           </motion.form>
         )}
 
@@ -297,12 +321,15 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
               initial={{ scale: 0, rotate: -40 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.1 }}
-              className="grid h-20 w-20 place-items-center rounded-full bg-accent text-accent-ink"
+              className="grid h-28 w-28 -rotate-6 place-items-center rounded-full border-[3px] border-dashed border-accent text-accent"
             >
-              <Check size={36} strokeWidth={2.5} />
+              <span className="text-center">
+                <Check size={30} strokeWidth={2.5} className="mx-auto" />
+                <span className="board block text-lg leading-none">Booked</span>
+              </span>
             </motion.div>
             <h3 className="display mt-6 text-3xl sm:text-4xl">
-              Rate locked, <span className="hl-soft">{contact.name.split(" ")[0] || "friend"}.</span>
+              Rate locked, <span className="hl">{contact.name.split(" ")[0] || "friend"}.</span>
             </h3>
             <p className={cn("mt-3 max-w-md", t.sub)}>
               A logistics specialist will confirm your booking within 30 minutes. Your estimate of{" "}
@@ -311,8 +338,9 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
               </strong>{" "}
               is held for 48 hours.
             </p>
-            <div className={cn("mt-6 rounded-full px-5 py-2.5 font-mono text-sm ring-1", dark ? "ring-white/15" : "ring-line")}>
-              Reference · {refId}
+            <div className={cn("mt-6 flex items-center gap-3 rounded-lg px-5 py-2.5 ring-1", dark ? "ring-white/15" : "ring-line")}>
+              <span className="eyebrow opacity-60">Reference</span>
+              <span className="board text-2xl">{refId}</span>
             </div>
             <button
               type="button"
@@ -327,14 +355,17 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+      {!dark && <Zigzag />}
     </div>
   );
 }
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <dt className="opacity-60">{k}</dt>
+    <div className="flex items-baseline gap-2">
+      <dt className="shrink-0 opacity-60">{k}</dt>
+      <span aria-hidden className="mb-1 min-w-4 flex-1 border-b border-dotted border-current/30" />
       <dd className="text-right font-medium">{v}</dd>
     </div>
   );
@@ -362,7 +393,7 @@ function Toggle({
       aria-checked={on}
       onClick={() => set(!on)}
       className={cn(
-        "flex items-center gap-3 rounded-2xl p-3.5 text-left ring-1 ring-inset transition-colors",
+        "flex items-center gap-3 rounded-xl p-3.5 text-left ring-1 ring-inset transition-colors",
         dark ? "ring-white/10 hover:bg-white/5" : "ring-line hover:bg-bone/70",
         on && (dark ? "bg-white/10" : "bg-bone"),
       )}
