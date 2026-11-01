@@ -5,7 +5,8 @@ import { getKey, putKey } from "./api";
 import { FieldGrid, type FieldDef, type Row } from "./fields";
 import { SaveBar, useUnsavedWarning } from "./CollectionEditor";
 import { useToast } from "./Toast";
-import { Loading, PageHeader } from "./ui";
+import { Loading } from "./ui";
+import { CmsHeader, Panel } from "./cms/kit";
 
 export type SingletonSection = {
   title: string;
@@ -16,6 +17,7 @@ export type SingletonSection = {
 
 export function SingletonEditor({
   dbKey,
+  code,
   eyebrow = "Content",
   title,
   description,
@@ -24,6 +26,8 @@ export function SingletonEditor({
   aside,
 }: {
   dbKey: DBKey;
+  /** Signage code shown in the header strip, e.g. "SYS-01". */
+  code?: string;
   eyebrow?: string;
   title: string;
   description?: string;
@@ -68,8 +72,9 @@ export function SingletonEditor({
   if (!original) return <Loading label={`Loading ${title.toLowerCase()}`} />;
 
   return (
-    <div>
-      <PageHeader
+    <div className="pb-32">
+      <CmsHeader
+        code={code ?? String(dbKey).toUpperCase().slice(0, 4)}
         eyebrow={eyebrow}
         title={title}
         description={description}
@@ -80,20 +85,16 @@ export function SingletonEditor({
           </>
         }
       />
-      <div className={aside ? "grid gap-5 xl:grid-cols-[1fr_360px]" : ""}>
+      <div className={aside ? "grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]" : ""}>
         <div className="space-y-5">
-          {sections.map((s) => (
-            <section key={s.title} className="rounded-[16px] border border-line bg-white p-4 sm:p-6">
-              <div className="mb-5">
-                <h2 className="text-[17px] font-semibold tracking-tight">{s.title}</h2>
-                {s.description && <p className="mt-0.5 text-[13px] text-muted">{s.description}</p>}
-              </div>
+          {sections.map((s, i) => (
+            <Panel key={s.title} index={i + 1} title={s.title} description={s.description}>
               {s.fields && <FieldGrid fields={s.fields} row={value} onChange={set} />}
-              {s.custom && <div className={s.fields ? "mt-5" : ""}>{s.custom(value, set)}</div>}
-            </section>
+              {s.custom && <div className={s.fields ? "mt-6" : ""}>{s.custom(value, set)}</div>}
+            </Panel>
           ))}
         </div>
-        {aside && <div className="xl:sticky xl:top-6 xl:self-start">{aside(value)}</div>}
+        {aside && <div className="order-first xl:order-none xl:sticky xl:top-6 xl:self-start">{aside(value)}</div>}
       </div>
     </div>
   );
