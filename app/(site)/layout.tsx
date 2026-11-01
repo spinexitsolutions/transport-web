@@ -11,8 +11,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Intro intro={intro} brand={settings.brandName} />
       <Navbar settings={settings} nav={nav} services={services.filter((s) => s.published).map((s) => ({ slug: s.slug, title: s.title, icon: s.icon }))} />
       <div className="manifest-grid" aria-hidden />
-      <main className="relative z-[1]">{children}</main>
-      <Footer settings={settings} nav={nav} services={services.filter((s) => s.published).map((s) => ({ slug: s.slug, title: s.title }))} />
+      <div className="lg:pl-[var(--rail)]">
+        <main className="relative z-[1]">{children}</main>
+        <Footer settings={settings} nav={nav} services={services.filter((s) => s.published).map((s) => ({ slug: s.slug, title: s.title }))} />
+      </div>
     </SmoothScroll>
   );
 }

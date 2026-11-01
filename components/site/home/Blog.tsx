@@ -3,44 +3,77 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionLabel } from "@/components/ui/SectionLabel";
-import { SplitWords } from "@/components/ui/SplitWords";
 import { fmtDate } from "@/lib/utils";
 
+/** Editorial broadsheet: masthead, lead story and a ruled column of briefs. */
 export function Blog({ posts }: { posts: Post[] }) {
+  const [lead, ...rest] = posts;
+  if (!lead) return null;
+  const issue = 100 + posts.length * 7;
   return (
     <section data-nav-label="Insights" className="wrap py-20 sm:py-28">
-      <div className="flex items-end justify-between gap-6">
-        <div>
-          <SectionLabel index="11">Insights</SectionLabel>
-          <h2 className="display mt-6 text-[clamp(2.6rem,6vw,5rem)]">
-            <SplitWords text="Notes from" /> <SplitWords text="the road." wordClassName="hl" delay={0.15} />
-          </h2>
+      {/* masthead */}
+      <div className="border-y-2 border-ink py-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <span className="board text-sm tracking-[0.2em] text-muted">Vol. 07 · No. {issue}</span>
+          <span className="board text-sm tracking-[0.2em] text-muted">{fmtDate(lead.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
         </div>
-        <Link href="/blog" className="hidden items-center gap-2 rounded-full px-5 py-3 ring-1 ring-line transition hover:bg-ink hover:text-white sm:inline-flex">
-          All articles <ArrowUpRight size={16} />
-        </Link>
+        <h2 className="display mt-3 text-center text-[clamp(2.4rem,8.5vw,7.5rem)] leading-[0.85] [font-stretch:125%]">
+          The <span className="hl">Kinetik</span> Dispatch
+        </h2>
+        <div className="mt-3 flex items-center justify-between gap-4 border-t border-line pt-3">
+          <span className="eyebrow text-muted">Field notes from the control tower</span>
+          <Link href="/blog" className="eyebrow inline-flex items-center gap-1 text-ink hover:text-accent">
+            All editions <ArrowUpRight size={12} />
+          </Link>
+        </div>
       </div>
-      <div className="no-scrollbar -mx-4 mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0">
-        {posts.slice(0, 3).map((p, i) => (
-          <Reveal key={p.id} delay={i * 0.08} className="w-[82vw] shrink-0 snap-start sm:w-auto">
-            <Link href={`/blog/${p.slug}`} className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] bg-bone-2">
-                <Image src={p.cover} alt={p.title} fill sizes="(min-width:640px) 33vw, 82vw" className="object-cover transition duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105" />
-                <span className="glass absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-medium">{p.category}</span>
-                <span className="absolute bottom-4 right-4 grid h-12 w-12 translate-y-3 place-items-center rounded-full bg-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                  <ArrowUpRight size={18} />
+
+      <div className="grid lg:grid-cols-12">
+        {/* lead story */}
+        <Reveal className="border-line py-8 lg:col-span-8 lg:border-r lg:pr-10">
+          <Link href={`/blog/${lead.slug}`} className="group block">
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-ink">Lead story</span>
+              <span className="eyebrow text-muted">{lead.category}</span>
+            </div>
+            <h3 className="display mt-4 text-[clamp(1.9rem,4.4vw,3.8rem)] [font-stretch:100%] transition-colors group-hover:text-accent">{lead.title}</h3>
+            <div className="mt-6 grid gap-6 sm:grid-cols-5">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-md sm:col-span-3">
+                <Image src={lead.cover} alt={lead.title} fill sizes="(min-width:1024px) 40vw, 100vw" className="object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+              </div>
+              <div className="sm:col-span-2">
+                <p className="text-lg leading-relaxed text-ink/80 first-letter:float-left first-letter:mr-2 first-letter:font-[family-name:var(--font-board)] first-letter:text-6xl first-letter:font-extrabold first-letter:leading-[0.8] first-letter:text-accent">
+                  {lead.excerpt}
+                </p>
+                <p className="mt-4 text-sm text-muted">
+                  By {lead.author} · {lead.readTime} min read
+                </p>
+                <span className="mt-6 inline-flex items-center gap-2 border-b border-ink pb-0.5 text-sm font-semibold">
+                  Continue reading <ArrowUpRight size={14} className="transition group-hover:rotate-45" />
                 </span>
               </div>
-              <div className="mt-5 flex items-center gap-3 text-sm text-muted">
-                <span>{fmtDate(p.date)}</span>
-                <span className="h-1 w-1 rounded-full bg-muted/50" />
-                <span>{p.readTime} min read</span>
-              </div>
-              <h3 className="mt-2 text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-accent sm:text-2xl">{p.title}</h3>
-            </Link>
-          </Reveal>
-        ))}
+            </div>
+          </Link>
+        </Reveal>
+
+        {/* briefs column */}
+        <div className="lg:col-span-4 lg:pl-10">
+          <div className="eyebrow border-b border-line py-4 text-muted lg:pt-8">In brief</div>
+          {rest.slice(0, 4).map((p, i) => (
+            <Reveal key={p.id} delay={i * 0.06}>
+              <Link href={`/blog/${p.slug}`} className="group grid grid-cols-[3rem_1fr] gap-3 border-b border-line py-5">
+                <span className="board text-5xl leading-none text-ink/20 transition-colors group-hover:text-accent">{String(i + 2).padStart(2, "0")}</span>
+                <span>
+                  <span className="eyebrow text-muted">
+                    {p.category} · {fmtDate(p.date, { day: "numeric", month: "short" })}
+                  </span>
+                  <span className="mt-1 block text-lg font-semibold leading-snug tracking-tight transition-colors group-hover:text-accent">{p.title}</span>
+                </span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

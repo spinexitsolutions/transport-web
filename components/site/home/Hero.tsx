@@ -86,7 +86,7 @@ export function Hero({ hero }: { hero: HeroContent }) {
   return (
     <section ref={section} data-nav-label="Welcome" className="relative" style={{ height: "calc(100svh + 140vh)" }}>
       <div ref={stage} className="sticky top-0 h-[100svh] overflow-hidden">
-        <div className="wrap relative z-10 flex h-full flex-col pb-4 pt-[76px] sm:pb-6 sm:pt-[92px]">
+        <div className="wrap relative z-10 flex h-full flex-col pb-[92px] pt-4 sm:pt-6 lg:pb-6 lg:pt-[76px]">
           {/* ── live manifest strip ── */}
           <motion.div style={{ opacity: chromeFade, y: chromeY }}>
             <ManifestStrip ready={ready} eyebrow={hero.eyebrow} />

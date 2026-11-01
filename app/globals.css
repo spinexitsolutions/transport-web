@@ -1,11 +1,13 @@
 @import "tailwindcss";
 @import "@fontsource-variable/archivo/wdth.css";
 @import "@fontsource-variable/hanken-grotesk/index.css";
+@import "@fontsource-variable/big-shoulders-display";
 
 /* ───────── Design tokens ─────────
    Cool paper + blue-black ink, one electric accent (editable in admin → Site & brand)
    and a "signal" lime used for accents on dark surfaces. */
 :root {
+  --rail: 76px; /* desktop navigation rail width */
   --accent: #3a2eff;
   --accent-ink: #ffffff;
   --signal: #d4ff3f;
@@ -17,6 +19,8 @@
   --muted: #676a75;
   --line: rgba(11, 13, 23, 0.1);
   --accent-light: color-mix(in oklab, var(--accent) 55%, white);
+  --tint: color-mix(in oklab, var(--accent) 13%, var(--bone));
+  --deep: color-mix(in oklab, var(--accent) 22%, #05060f);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -31,6 +35,9 @@
   --color-night: var(--night);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-tint: var(--tint);
+  --color-deep: var(--deep);
+  --font-board: "Big Shoulders Display Variable", "Archivo Variable", ui-sans-serif, sans-serif;
   --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Archivo Variable", "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
@@ -64,6 +71,10 @@
   }
   button {
     cursor: pointer;
+  }
+  /* grid children may shrink below their content (prevents mobile overflow from scrollers) */
+  .grid > * {
+    min-width: 0;
   }
 }
 
@@ -119,9 +130,19 @@ html.lenis body {
   .on-dark .hl {
     color: var(--signal);
   }
+  /* Signage / departure-board type (Big Shoulders) for numbers, indices, tickers */
+  .board {
+    font-family: var(--font-board);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 0.85;
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
+  }
+  .bg-deep .hl,
   .bg-accent .hl {
-    color: inherit;
-    opacity: 0.7;
+    color: var(--signal);
+    opacity: 1;
   }
   .hl-soft {
     font-family: var(--font-display);
@@ -271,6 +292,7 @@ html.lenis body {
 }
 @media (min-width: 1024px) {
   .manifest-grid {
+    left: var(--rail);
     --cols: 12;
     --gutter: max(2.5rem, calc((100% - 1440px) / 2 + 2.5rem));
   }

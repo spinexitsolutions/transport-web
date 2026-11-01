@@ -33,7 +33,7 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <>
-      <section className="wrap pt-32 sm:pt-40">
+      <section className="wrap pt-12 sm:pt-20 lg:pt-28">
         <Link href="/services" className="eyebrow text-muted transition-colors hover:text-ink">
           ← All services
         </Link>

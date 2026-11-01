@@ -1,391 +1,389 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Search } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, ArrowUpRight, Search, X } from "lucide-react";
 import type { NavLink, SiteSettings } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 type Svc = { slug: string; title: string; icon: string };
+type Stop = { label: string; frac: number; el: HTMLElement };
 
-const SPRING = { type: "spring", stiffness: 380, damping: 34, mass: 0.9 } as const;
+const E = [0.76, 0, 0.24, 1] as const;
+
+const DEPARTURES = [
+  { id: "KNT-482019", from: "BLR", to: "DXB", mode: "Air", status: "Out for delivery" },
+  { id: "KNT-730551", from: "BOM", to: "DEL", mode: "Road", status: "In transit" },
+  { id: "KNT-219874", from: "MUN", to: "JEA", mode: "Sea", status: "Customs" },
+  { id: "KNT-118230", from: "COK", to: "BOM", mode: "Cold", status: "Delivered" },
+];
 
 /**
- * "Dynamic Island" navigation.
- * A single black capsule that morphs: compact while scrolling, expanded at rest,
- * grows into a services mega-panel on hover and into a full-screen sheet on mobile.
+ * "Route Rail" navigation.
+ * Desktop: a dark vertical rail on the left — the page's sections are stops on a route
+ * and a vehicle marker travels down it as you scroll.
+ * Mobile: a thumb-reach bottom bar. The menu is a full-screen "departures" overlay.
  */
 export function Navbar({ settings, nav, services }: { settings: SiteSettings; nav: NavLink[]; services: Svc[] }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false); // mobile / compact sheet
-  const [mega, setMega] = useState(false); // desktop services panel
-  const [compact, setCompact] = useState(false);
-  const [hoverIsland, setHoverIsland] = useState(false);
-  const [section, setSection] = useState<string>("");
-  const [hovered, setHovered] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [stops, setStops] = useState<Stop[]>([]);
+  const [section, setSection] = useState("");
+  const [hoverStop, setHoverStop] = useState<number | null>(null);
   const [trackId, setTrackId] = useState("");
+  const [down, setDown] = useState(false);
   const { scrollY, scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
-  const lastY = useRef(0);
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 26 });
+  const markerTop = useTransform(progress, (v) => `${v * 100}%`);
+  const barWidth = useTransform(progress, (v) => `${v * 100}%`);
 
   useMotionValueEvent(scrollY, "change", (y) => {
-    const down = y > lastY.current;
-    if (Math.abs(y - lastY.current) > 6) setCompact(y > 140 && down);
-    lastY.current = y;
+    const prev = scrollY.getPrevious() ?? 0;
+    if (Math.abs(y - prev) > 4) setDown(y > prev && y > 200);
   });
 
-  // Close everything on navigation
-  useEffect(() => {
-    setOpen(false);
-    setMega(false);
-  }, [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
-  // Lock scroll when the sheet is open
   useEffect(() => {
     if (open) window.__lenis?.stop();
     else window.__lenis?.start();
     document.documentElement.style.overflow = open ? "hidden" : "";
   }, [open]);
 
-  // Track which [data-nav-label] section is in the middle of the viewport
+  // collect section stops + active section
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-label]"));
-    const page = nav.find((n) => n.href !== "/" && pathname.startsWith(n.href))?.label ?? "";
+    const page = nav.find((n) => n.href !== "/" && pathname.startsWith(n.href))?.label ?? "Home";
     setSection(page);
-    if (!els.length) return;
+    const collect = () => {
+      const els = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-label]"));
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      setStops(
+        els.map((el) => ({
+          label: el.dataset.navLabel || "",
+          frac: Math.min(1, Math.max(0, (el.getBoundingClientRect().top + window.scrollY) / max)),
+          el,
+        })),
+      );
+    };
+    const t = setTimeout(collect, 400);
+    const ro = new ResizeObserver(() => collect());
+    ro.observe(document.body);
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => e.isIntersecting && setSection((e.target as HTMLElement).dataset.navLabel || ""));
-      },
+      (entries) => entries.forEach((e) => e.isIntersecting && setSection((e.target as HTMLElement).dataset.navLabel || page)),
       { rootMargin: "-50% 0px -50% 0px" },
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    document.querySelectorAll<HTMLElement>("[data-nav-label]").forEach((el) => io.observe(el));
+    return () => {
+      clearTimeout(t);
+      ro.disconnect();
+      io.disconnect();
+    };
   }, [pathname, nav]);
 
-  const expanded = !compact || hoverIsland;
-  const label = section || settings.announcement;
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const goTo = useCallback((el: HTMLElement) => {
+    if (window.__lenis) window.__lenis.scrollTo(el, { duration: 1.6 });
+    else el.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const submitTrack = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trackId.trim()) return;
-    router.push(`/track?id=${encodeURIComponent(trackId.trim())}`);
+    router.push(`/track${trackId.trim() ? `?id=${encodeURIComponent(trackId.trim())}` : ""}`);
     setOpen(false);
   };
 
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+
   return (
     <>
-      {/* dim backdrop for sheet & mega panel */}
-      <AnimatePresence>
-        {(open || mega) && (
-          <motion.div
-            key="scrim"
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => {
-              setOpen(false);
-              setMega(false);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {/* ───────── Desktop rail ───────── */}
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[var(--rail)] flex-col items-center bg-ink py-4 text-white lg:flex">
+        <Link href="/" aria-label={`${settings.brandName} home`} className="group">
+          <Logo className="transition-transform duration-500 group-hover:rotate-[-8deg]" />
+        </Link>
+        <span className="board mt-2 text-[11px] tracking-[0.2em] text-white/40">{settings.brandName.slice(0, 3)}</span>
 
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-2.5 pt-2.5 sm:px-4 sm:pt-4">
-        <LayoutGroup>
-          <motion.nav
-            layout
-            transition={SPRING}
-            onMouseEnter={() => setHoverIsland(true)}
-            onMouseLeave={() => {
-              setHoverIsland(false);
-              setMega(false);
-              setHovered(null);
-            }}
-            style={{ borderRadius: open ? 30 : 26 }}
-            className={cn(
-              "pointer-events-auto relative overflow-hidden bg-[#0c0c0e]/[0.92] text-white shadow-[0_20px_60px_-20px_rgba(0,0,0,.55),inset_0_0_0_1px_rgba(255,255,255,.07)] backdrop-blur-2xl",
-              open ? "h-[calc(100svh-20px)] w-full max-w-xl sm:h-auto sm:max-h-[calc(100svh-32px)]" : "w-auto",
-            )}
-          >
-            {/* ── top bar ── */}
-            <motion.div layout="position" className="flex h-[52px] items-center gap-1 pl-2 pr-2">
-              <Link href="/" className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2" aria-label={`${settings.brandName} home`}>
-                <Logo />
-                <AnimatePresence initial={false}>
-                  {(expanded || open) && (
+        {/* route */}
+        <div className="relative my-6 w-full flex-1">
+          <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,rgba(255,255,255,.25)_0_4px,transparent_4px_9px)]" />
+          <motion.div className="absolute left-1/2 top-0 w-[2px] -translate-x-1/2 bg-signal" style={{ height: markerTop }} />
+          {stops.map((s, i) => {
+            const current = s.label === section;
+            return (
+              <button
+                key={`${s.label}-${i}`}
+                onClick={() => goTo(s.el)}
+                onMouseEnter={() => setHoverStop(i)}
+                onMouseLeave={() => setHoverStop(null)}
+                className="absolute left-1/2 grid h-6 w-6 -translate-x-1/2 -translate-y-1/2 place-items-center"
+                style={{ top: `${s.frac * 100}%` }}
+                aria-label={`Go to ${s.label}`}
+              >
+                <span
+                  className={cn(
+                    "block rounded-full transition-all duration-300",
+                    current ? "h-2.5 w-2.5 bg-signal ring-4 ring-signal/20" : "h-1.5 w-1.5 bg-white/45",
+                  )}
+                />
+                <AnimatePresence>
+                  {hoverStop === i && (
                     <motion.span
-                      key="brand"
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: "auto" }}
-                      exit={{ opacity: 0, width: 0 }}
-                      transition={SPRING}
-                      className="overflow-hidden whitespace-nowrap text-[15px] font-semibold tracking-tight"
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -6 }}
+                      className="eyebrow pointer-events-none absolute left-8 whitespace-nowrap rounded-md bg-ink px-2.5 py-1.5 text-white shadow-xl ring-1 ring-white/10"
                     >
-                      {settings.brandName}
+                      <span className="board mr-2 text-sm text-signal">{String(i + 1).padStart(2, "0")}</span>
+                      {s.label}
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </Link>
+              </button>
+            );
+          })}
+          {/* vehicle marker */}
+          <motion.div className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ top: markerTop }}>
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-white shadow-[0_0_0_4px_var(--ink)]">
+              <Icon name="Truck" size={13} strokeWidth={2.2} />
+            </span>
+          </motion.div>
+        </div>
 
-              {/* desktop links */}
-              <AnimatePresence initial={false}>
-                {expanded && !open && (
-                  <motion.ul
-                    key="links"
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
-                    transition={SPRING}
-                    className="hidden items-center overflow-hidden lg:flex"
-                    onMouseLeave={() => setHovered(null)}
-                  >
-                    {nav.map((n) => {
-                      const isServices = n.href === "/services";
-                      return (
-                        <li key={n.id} className="relative" onMouseEnter={() => { setHovered(n.id); setMega(isServices); }}>
-                          {hovered === n.id && (
-                            <motion.span layoutId="nav-hover" className="absolute inset-0 rounded-full bg-white/10" transition={SPRING} />
-                          )}
-                          <Link
-                            href={n.href}
+        {/* current section, vertical */}
+        <div className="relative mb-5 h-36 w-6 overflow-hidden">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={section}
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -40, opacity: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="eyebrow absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-white/70 [writing-mode:vertical-rl] rotate-180"
+            >
+              {section}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
+        <MenuButton open={open} onClick={() => setOpen((o) => !o)} />
+      </aside>
+
+      {/* ───────── Desktop top-right cluster ───────── */}
+      <div className="fixed right-4 top-4 z-40 hidden items-center gap-2 lg:flex">
+        <AnimatePresence initial={false}>
+          {!down && settings.announcement && (
+            <motion.span
+              key="ann"
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              className="glass hidden items-center gap-2 rounded-full px-4 py-2.5 text-[13px] text-ink ring-1 ring-line xl:flex"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {settings.announcement}
+            </motion.span>
+          )}
+        </AnimatePresence>
+        <Link href="/track" className="glass flex h-11 items-center gap-2 rounded-full px-4 text-[14px] font-medium text-ink ring-1 ring-line transition hover:ring-ink/30">
+          <Search size={15} /> Track
+        </Link>
+        <Link href="/quote" className="group flex h-11 items-center gap-2 rounded-full bg-accent pl-5 pr-1.5 text-[14px] font-medium text-accent-ink">
+          Get a quote
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-signal text-ink transition-transform duration-500 group-hover:rotate-45">
+            <ArrowUpRight size={15} />
+          </span>
+        </Link>
+      </div>
+
+      {/* ───────── Mobile bottom bar ───────── */}
+      <nav className="fixed inset-x-2.5 bottom-2.5 z-50 lg:hidden">
+        <div className="relative flex h-16 items-center gap-2 overflow-hidden rounded-[18px] bg-ink pl-2 pr-2 text-white shadow-[0_18px_50px_-12px_rgba(0,0,0,.5)]">
+          <motion.span className="absolute left-0 top-0 h-[2px] bg-signal" style={{ width: barWidth }} />
+          <Link href="/" aria-label="Home">
+            <Logo />
+          </Link>
+          <div className="min-w-0 flex-1 pl-1">
+            <div className="eyebrow text-[9px] text-white/40">{settings.brandName} · now viewing</div>
+            <div className="relative h-5 overflow-hidden">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={section}
+                  initial={{ y: 18, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -18, opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="truncate text-[14px] font-medium leading-5"
+                >
+                  {section}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+          <Link href="/quote" className="flex h-11 items-center rounded-[12px] bg-signal px-4 text-[14px] font-semibold text-ink">
+            Quote
+          </Link>
+          <MenuButton open={open} onClick={() => setOpen((o) => !o)} />
+        </div>
+      </nav>
+
+      {/* ───────── Full-screen menu ───────── */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="menu"
+            className="fixed inset-0 z-[60] overflow-y-auto bg-accent text-white lg:left-[var(--rail)]"
+            initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+            animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
+            transition={{ duration: 0.85, ease: E }}
+            data-lenis-prevent
+          >
+            <div className="noise absolute inset-0" />
+            <div className="wrap relative flex min-h-full flex-col pb-28 pt-5 lg:pb-10 lg:pt-8">
+              <div className="flex items-center justify-between">
+                <span className="eyebrow flex items-center gap-3 text-white/70">
+                  <span className="cross text-signal" /> Menu · {settings.brandName} {settings.brandSuffix}
+                </span>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="grid h-11 w-11 place-items-center rounded-full bg-white/15 transition hover:rotate-90 hover:bg-white/25"
+                  aria-label="Close menu"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="mt-8 grid flex-1 gap-10 lg:mt-12 lg:grid-cols-12">
+                {/* links */}
+                <ul className="lg:col-span-7">
+                  {[{ id: "home", label: "Home", href: "/" }, ...nav].map((n, i) => (
+                    <li key={n.id} className="overflow-hidden border-b border-white/15">
+                      <motion.div initial={{ y: "100%" }} animate={{ y: "0%" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 + i * 0.05 }}>
+                        <Link href={n.href} className="group flex items-baseline gap-4 py-3 sm:py-4">
+                          <span className="board w-8 text-xl text-white/45 transition-colors group-hover:text-signal">{String(i + 1).padStart(2, "0")}</span>
+                          <span
                             className={cn(
-                              "relative block whitespace-nowrap rounded-full px-3.5 py-2 text-[14px] tracking-tight transition-colors",
-                              isActive(n.href) ? "text-white" : "text-white/60 hover:text-white",
+                              "display text-[clamp(2.1rem,6.2vw,4.6rem)] transition-all duration-500 group-hover:translate-x-3 group-hover:text-signal",
+                              isActive(n.href) && "text-signal",
                             )}
                           >
                             {n.label}
-                            {isActive(n.href) && <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-accent" />}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </motion.ul>
-                )}
-              </AnimatePresence>
+                          </span>
+                          <ArrowUpRight className="ml-auto self-center opacity-0 transition-all duration-500 group-hover:rotate-45 group-hover:opacity-100" />
+                        </Link>
+                      </motion.div>
+                    </li>
+                  ))}
+                </ul>
 
-              {/* live label (section / announcement) — shown when compact or on mobile */}
-              <AnimatePresence initial={false} mode="popLayout">
-                {!open && (
-                  <motion.div
-                    key="label"
-                    layout="position"
-                    className={cn("relative flex min-w-0 items-center gap-2 px-2", expanded && "lg:hidden")}
-                  >
-                    <span className="relative flex h-2 w-2 shrink-0">
-                      <span className="pulse-ring absolute inset-0 rounded-full bg-accent" />
-                      <span className="relative h-2 w-2 rounded-full bg-accent" />
-                    </span>
-                    <div className="relative h-5 max-w-[42vw] overflow-hidden sm:max-w-[260px]">
-                      <AnimatePresence mode="popLayout" initial={false}>
-                        <motion.span
-                          key={label}
-                          initial={{ y: 18, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -18, opacity: 0 }}
-                          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                          className="block truncate text-[13px] leading-5 text-white/75"
-                        >
-                          {label}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="ml-auto flex items-center gap-1 pl-1">
-                {/* progress ring */}
-                {!open && (
-                  <motion.div layout="position" className="relative hidden sm:block">
-                    <Link href="/track" className="relative grid h-9 w-9 place-items-center" aria-label="Track a shipment">
-                    <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90">
-                      <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.12)" strokeWidth="2" />
-                      <motion.circle cx="18" cy="18" r="15" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" style={{ pathLength: progress }} />
-                    </svg>
-                    <Search size={14} className="text-white/60" />
-                    </Link>
-                  </motion.div>
-                )}
-                <AnimatePresence initial={false}>
-                  {expanded && !open && (
-                    <motion.div
-                      key="cta"
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: "auto" }}
-                      exit={{ opacity: 0, width: 0 }}
-                      transition={SPRING}
-                      className="hidden overflow-hidden sm:block"
-                    >
-                      <Link
-                        href="/quote"
-                        className="group ml-1 flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-accent pl-4 pr-3 text-[13.5px] font-medium text-accent-ink"
-                      >
-                        Get a quote
-                        <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:rotate-45" />
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <button
-                  onClick={() => setOpen((o) => !o)}
-                  aria-label={open ? "Close menu" : "Open menu"}
-                  aria-expanded={open}
-                  className={cn("grid h-9 w-9 place-items-center rounded-full bg-white/10 transition hover:bg-white/15", expanded && !open && "lg:hidden")}
-                >
-                  <span className="relative block h-3 w-4">
-                    <motion.span
-                      className="absolute left-0 top-0 h-[1.5px] w-4 rounded bg-white"
-                      animate={open ? { rotate: 45, y: 5.25 } : { rotate: 0, y: 0 }}
-                      transition={SPRING}
-                    />
-                    <motion.span
-                      className="absolute bottom-0 left-0 h-[1.5px] w-4 rounded bg-white"
-                      animate={open ? { rotate: -45, y: -5.25, width: 16 } : { rotate: 0, y: 0, width: 10 }}
-                      transition={SPRING}
-                    />
-                  </span>
-                </button>
-              </div>
-            </motion.div>
-
-            {/* ── desktop services mega panel ── */}
-            <AnimatePresence initial={false}>
-              {mega && !open && expanded && (
+                {/* departures board */}
                 <motion.div
-                  key="mega"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={SPRING}
-                  className="hidden lg:block"
-                  onMouseLeave={() => setMega(false)}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.45, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col gap-4 lg:col-span-5"
                 >
-                  <div className="grid grid-cols-[1fr_220px] gap-3 p-3 pt-1">
-                    <div className="grid grid-cols-2 gap-1">
-                      {services.map((s, i) => (
-                        <motion.div key={s.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * i }}>
-                          <Link href={`/services/${s.slug}`} className="group flex items-center gap-3 rounded-2xl p-2.5 transition hover:bg-white/[0.07]">
-                            <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.08] text-white/80 transition group-hover:bg-accent group-hover:text-accent-ink">
-                              <Icon name={s.icon} size={17} strokeWidth={1.8} />
-                            </span>
-                            <span className="text-[14px] tracking-tight text-white/85">{s.title}</span>
-                          </Link>
-                        </motion.div>
+                  <div className="rounded-[18px] bg-deep p-4 sm:p-5">
+                    <div className="flex items-center justify-between">
+                      <span className="board text-2xl text-signal">Departures</span>
+                      <span className="eyebrow text-white/50">Live</span>
+                    </div>
+                    <div className="mt-3 divide-y divide-white/10">
+                      {DEPARTURES.map((d) => (
+                        <Link key={d.id} href={`/track?id=${d.id}`} className="grid grid-cols-[1fr_auto_auto] items-center gap-3 py-2.5 transition hover:bg-white/5">
+                          <span className="board text-lg tracking-wide">
+                            {d.from} <span className="text-white/40">→</span> {d.to}
+                            <span className="ml-2 align-middle font-sans text-[11px] font-normal normal-case text-white/45">{d.id}</span>
+                          </span>
+                          <span className="eyebrow text-white/50">{d.mode}</span>
+                          <span className={cn("board text-sm", d.status === "Delivered" ? "text-white/50" : "text-signal")}>{d.status}</span>
+                        </Link>
                       ))}
                     </div>
-                    <form onSubmit={submitTrack} className="flex flex-col justify-between rounded-2xl bg-accent p-4 text-accent-ink">
-                      <div>
-                        <div className="eyebrow opacity-70">Track</div>
-                        <p className="mt-2 text-[17px] font-medium leading-tight tracking-tight">Where&apos;s my shipment?</p>
-                      </div>
-                      <div className="mt-4 flex items-center rounded-full bg-white/15 p-1">
-                        <input
-                          value={trackId}
-                          onChange={(e) => setTrackId(e.target.value)}
-                          placeholder="KNT-482019"
-                          className="w-full min-w-0 bg-transparent px-3 text-[13px] placeholder:text-white/55 focus:outline-none"
-                          aria-label="Tracking ID"
-                        />
-                        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink text-white" aria-label="Track">
-                          <ArrowRight size={14} />
-                        </button>
-                      </div>
+                    <form onSubmit={submitTrack} className="mt-4 flex items-center rounded-[12px] bg-white/10 p-1.5">
+                      <Search size={16} className="ml-2 shrink-0 text-white/50" />
+                      <input
+                        value={trackId}
+                        onChange={(e) => setTrackId(e.target.value)}
+                        placeholder="Tracking ID"
+                        className="w-full min-w-0 bg-transparent px-3 text-[15px] placeholder:text-white/40 focus:outline-none"
+                        aria-label="Tracking ID"
+                      />
+                      <button className="grid h-10 w-10 shrink-0 place-items-center rounded-[10px] bg-signal text-ink" aria-label="Track">
+                        <ArrowRight size={16} />
+                      </button>
                     </form>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
-            {/* ── full sheet (mobile / compact) ── */}
-            <AnimatePresence initial={false}>
-              {open && (
-                <motion.div
-                  key="sheet"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { delay: 0.12 } }}
-                  exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                  className="flex h-[calc(100%-52px)] flex-col overflow-y-auto px-5 pb-5 pt-4 sm:h-auto"
-                  data-lenis-prevent
-                >
-                  <ul className="flex flex-col">
-                    {[{ id: "home", label: "Home", href: "/" }, ...nav].map((n, i) => (
-                      <motion.li
-                        key={n.id}
-                        initial={{ y: 40, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.12 + i * 0.045, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                        className="border-b border-white/[0.08]"
+                  <div className="flex flex-wrap gap-2">
+                    {services.map((s) => (
+                      <Link
+                        key={s.slug}
+                        href={`/services/${s.slug}`}
+                        className="flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-2 text-[13px] transition hover:bg-white hover:text-ink"
                       >
-                        <Link href={n.href} className="group flex items-center justify-between py-3.5">
-                          <span className={cn("display text-[2.1rem] sm:text-[2.4rem]", isActive(n.href) ? "text-white" : "text-white/70 group-hover:text-white")}>
-                            {n.label}
-                            {isActive(n.href) && <span className="hl">.</span>}
-                          </span>
-                          <span className="font-mono text-xs text-white/30">0{i + 1}</span>
-                        </Link>
-                      </motion.li>
+                        <Icon name={s.icon} size={14} /> {s.title}
+                      </Link>
                     ))}
-                  </ul>
+                  </div>
 
-                  <motion.form
-                    onSubmit={submitTrack}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="mt-6 flex items-center rounded-full bg-white/[0.08] p-1.5"
-                  >
-                    <Search size={16} className="ml-3 shrink-0 text-white/50" />
-                    <input
-                      value={trackId}
-                      onChange={(e) => setTrackId(e.target.value)}
-                      placeholder="Enter tracking ID"
-                      className="w-full min-w-0 bg-transparent px-3 text-[15px] placeholder:text-white/35 focus:outline-none"
-                      aria-label="Tracking ID"
-                    />
-                    <button className="h-10 shrink-0 rounded-full bg-white px-4 text-sm font-medium text-ink">Track</button>
-                  </motion.form>
-
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-auto pt-8">
-                    <Link href="/quote" className="flex h-14 items-center justify-between rounded-full bg-accent pl-6 pr-2 font-medium text-accent-ink">
-                      Get an instant quote
-                      <span className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white">
-                        <ArrowUpRight size={18} />
-                      </span>
-                    </Link>
-                    <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-[13px] text-white/50">
-                      <a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a>
-                      <div className="flex gap-4">
-                        {settings.socials.map((s) => (
-                          <a key={s.label} href={s.url} target="_blank" rel="noreferrer" className="hover:text-white">
-                            {s.label}
-                          </a>
-                        ))}
-                      </div>
+                  <div className="mt-auto grid grid-cols-2 gap-4 pt-4 text-[14px]">
+                    <div>
+                      <div className="eyebrow text-white/50">Call</div>
+                      <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="mt-1 block font-medium">
+                        {settings.phone}
+                      </a>
                     </div>
-                  </motion.div>
+                    <div>
+                      <div className="eyebrow text-white/50">Write</div>
+                      <a href={`mailto:${settings.email}`} className="mt-1 block font-medium">
+                        {settings.email}
+                      </a>
+                    </div>
+                    <div className="col-span-2 flex flex-wrap gap-4 text-white/70">
+                      {settings.socials.map((s) => (
+                        <a key={s.label} href={s.url} target="_blank" rel="noreferrer" className="hover:text-white">
+                          {s.label} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.nav>
-        </LayoutGroup>
-      </header>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
+  );
+}
+
+function MenuButton({ open, onClick }: { open: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={open ? "Close menu" : "Open menu"}
+      aria-expanded={open}
+      className="grid h-11 w-11 place-items-center rounded-[12px] bg-white/10 transition hover:bg-white/20"
+    >
+      <span className="flex flex-col gap-[5px]">
+        <motion.span className="block h-[2px] w-5 rounded bg-white" animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }} />
+        <motion.span className="block h-[2px] w-5 rounded bg-white" animate={open ? { opacity: 0 } : { opacity: 1 }} />
+        <motion.span className="block h-[2px] w-3 rounded bg-signal" animate={open ? { rotate: -45, y: -7, width: 20 } : { rotate: 0, y: 0, width: 12 }} />
+      </span>
+    </button>
   );
 }
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn("relative grid h-8 w-8 place-items-center rounded-[10px] bg-accent text-accent-ink", className)}>
-      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <span className={cn("relative grid h-10 w-10 place-items-center rounded-[12px] bg-accent text-white", className)}>
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 4v16" />
         <path d="M18 4l-8 8 8 8" />
       </svg>
+      <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-signal ring-2 ring-ink" />
     </span>
   );
 }

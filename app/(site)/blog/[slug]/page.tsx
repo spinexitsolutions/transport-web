@@ -29,7 +29,7 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <article>
-      <header className="wrap pt-32 sm:pt-40">
+      <header className="wrap pt-12 sm:pt-20 lg:pt-28">
         <div className="mx-auto max-w-4xl">
           <Link href="/blog" className="eyebrow text-muted transition-colors hover:text-ink">
             ← All insights

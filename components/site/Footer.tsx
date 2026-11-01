@@ -23,7 +23,7 @@ export function Footer({ settings, nav, services }: { settings: SiteSettings; na
   const letters = settings.brandName.split("");
 
   return (
-    <footer ref={ref} className="relative overflow-hidden bg-night text-white" data-nav-label="Contact">
+    <footer ref={ref} className="relative overflow-hidden bg-night pb-24 text-white lg:pb-0" data-nav-label="Contact">
       <div className="noise absolute inset-0" />
       <motion.div style={{ y }} className="relative">
         <div className="wrap grid gap-14 pb-10 pt-20 sm:pt-28 lg:grid-cols-12">
@@ -96,8 +96,8 @@ export function Footer({ settings, nav, services }: { settings: SiteSettings; na
         {/* giant wordmark */}
         <div className="relative select-none overflow-hidden px-2 pb-2" aria-hidden>
           <motion.div
-            className="flex justify-center font-semibold leading-[0.8] tracking-[-0.06em]"
-            style={{ fontSize: `min(${(100 / (letters.length * 0.56)).toFixed(2)}vw, 24rem)` }}
+            className="board flex justify-center leading-[0.78] tracking-[0.01em]"
+            style={{ fontSize: `min(${(100 / (letters.length * 0.47)).toFixed(2)}vw, 30rem)` }}
             initial="hidden"
             whileInView="show"
             viewport={{ once: false, amount: 0.15 }}
