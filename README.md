@@ -33,6 +33,9 @@ Copy `.env.example` to `.env.local` to change the admin credentials and the sess
 
 ## Admin panel (`/admin`)
 
+Designed as a "Control Tower OS": dark sidebar with 3-letter screen codes, a live status strip, and a **⌘K / Ctrl+K command palette** to jump to any screen or action. Leads are freight tickets in lanes, shipments a departures board, applications boarding passes, and content editors a manifest index + spec sheet with a floating save dock.
+
+
 - **Dashboard:** pipeline value, new leads, active shipments, won revenue and win rate. Charts for inbound leads and the pipeline by stage.
 - **CRM**
   - Leads: a Kanban board with drag-and-drop between stages, and a table view. Each lead has notes, an owner and a deal value, and can be converted to a customer.

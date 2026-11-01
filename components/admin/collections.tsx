@@ -246,7 +246,24 @@ export const COLLECTIONS = {
 
 export type CollectionName = keyof typeof COLLECTIONS;
 
+/** Header strip label per collection (presentation only). */
+const EYEBROWS: Partial<Record<CollectionName, string>> = {
+  services: "Catalogue",
+  posts: "Editorial",
+  testimonials: "Social proof",
+  faqs: "Support desk",
+  jobs: "Careers",
+  stats: "Numbers board",
+  process: "Homepage · process",
+  industries: "Homepage · sectors",
+  fleet: "Assets",
+  hubs: "Network",
+  clients: "Social proof",
+  nav: "Navigation",
+  customers: "CRM · Accounts",
+};
+
 export function CollectionPage({ name }: { name: CollectionName }) {
   const cfg: CollectionConfig = COLLECTIONS[name];
-  return <CollectionEditor key={name} {...cfg} />;
+  return <CollectionEditor key={name} {...cfg} eyebrow={cfg.eyebrow ?? EYEBROWS[name]} />;
 }
