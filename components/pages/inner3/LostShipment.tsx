@@ -24,21 +24,28 @@ function FlapRow() {
     return () => clearInterval(id);
   }, []);
   return (
-    <div className="flex flex-wrap justify-center gap-[3px] sm:gap-1" aria-label={TARGET}>
-      {text.split("").map((c, i) =>
-        TARGET[i] === " " ? (
-          <span key={i} className="w-3 sm:w-5" />
-        ) : (
-          <span
-            key={i}
-            aria-hidden
-            className="board relative grid h-11 w-7 place-items-center rounded-[4px] bg-[#151829] text-2xl text-signal shadow-[inset_0_-2px_0_rgba(0,0,0,.4)] sm:h-16 sm:w-11 sm:text-4xl"
-          >
-            {c}
-            <span className="absolute inset-x-0 top-1/2 h-px bg-black/60" />
-          </span>
-        ),
-      )}
+    <div className="flex flex-wrap justify-center gap-x-3 gap-y-2 sm:gap-x-5" aria-label={TARGET}>
+      {(() => {
+        // group characters by word so wrapping only happens between words
+        let offset = 0;
+        return TARGET.split(" ").map((word, w) => {
+          const start = offset;
+          offset += word.length + 1;
+          return (
+            <span key={w} className="flex gap-[3px] sm:gap-1">
+              {text
+                .slice(start, start + word.length)
+                .split("")
+                .map((c, i) => (
+                  <span key={i} aria-hidden className="board relative grid h-9 w-[22px] place-items-center rounded-[4px] bg-[#151829] text-xl text-signal shadow-[inset_0_-2px_0_rgba(0,0,0,.4)] sm:h-12 sm:w-8 sm:text-3xl lg:h-14 lg:w-[34px] lg:text-4xl">
+                    {c}
+                    <span className="absolute inset-x-0 top-1/2 h-px bg-black/60" />
+                  </span>
+                ))}
+            </span>
+          );
+        });
+      })()}
     </div>
   );
 }
@@ -58,7 +65,7 @@ export function LostShipment() {
           </span>
           Kinetik
         </Link>
-        <span className="eyebrow text-white/50">Control tower · Exception desk</span>
+        <span className="eyebrow hidden text-white/50 sm:inline">Control tower · Exception desk</span>
       </div>
 
       <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center py-10 text-center">

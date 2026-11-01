@@ -61,7 +61,7 @@ export function Logbook({ items }: { items: Milestone[] }) {
       </div>
 
       {/* mobile: vertical log */}
-      <div className="wrap py-16 lg:hidden">
+      <div className="wrap overflow-x-clip py-16 lg:hidden">
         <div className="eyebrow flex items-center gap-3 text-muted">
           <span className="cross text-accent" /> Logbook · 2012 — 2026
         </div>

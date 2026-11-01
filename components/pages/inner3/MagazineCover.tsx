@@ -65,9 +65,9 @@ export function MagazineCover({ featured, lines, issue }: { featured: Post; line
               initial="h"
               animate="s"
               variants={{ s: { transition: { staggerChildren: 0.1, delayChildren: 0.7 } } }}
-              className="space-y-4 lg:col-span-3"
+              className="hidden space-y-4 text-right lg:col-span-3 lg:col-start-10 lg:block [&_p]:ml-auto"
             >
-              {lines.slice(0, 3).map((p, i) => (
+              {lines.slice(0, 2).map((p, i) => (
                 <motion.li key={p.id} variants={{ h: { opacity: 0, x: -20 }, s: { opacity: 1, x: 0, transition: { duration: 0.7, ease: E } } }}>
                   <span className="board text-2xl text-signal">{String(i + 2).padStart(2, "0")}</span>
                   <p className="mt-1 max-w-[16rem] text-[15px] font-semibold leading-snug">{p.title}</p>
