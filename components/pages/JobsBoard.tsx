@@ -104,7 +104,7 @@ function ApplyModal({ job, onClose }: { job: Job; onClose: () => void }) {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: "100%", opacity: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-bone p-5 sm:rounded-[28px] sm:p-8"
+        className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-bone p-5 sm:rounded-[20px] sm:p-8"
       >
         <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-white ring-1 ring-line">
           <X size={16} />

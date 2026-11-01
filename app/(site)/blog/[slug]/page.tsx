@@ -55,7 +55,7 @@ export default async function PostPage({ params }: Props) {
       </header>
 
       <div className="mt-12 px-2 sm:px-4">
-        <ImageReveal src={post.cover} alt={post.title} priority className="mx-auto aspect-[4/3] max-w-6xl rounded-[28px] sm:aspect-[21/10] sm:rounded-[36px]" />
+        <ImageReveal src={post.cover} alt={post.title} priority className="mx-auto aspect-[4/3] max-w-6xl rounded-[20px] sm:aspect-[21/10] sm:rounded-[20px]" />
       </div>
 
       <div className="wrap py-16 sm:py-24">
@@ -63,7 +63,7 @@ export default async function PostPage({ params }: Props) {
           {paragraphs.map((p, i) =>
             i === 0 ? (
               <Reveal key={i}>
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-7xl first-letter:leading-[0.85] first-letter:text-accent">{p}</p>
+                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:font-bold first-letter:text-7xl first-letter:leading-[0.85] first-letter:text-accent">{p}</p>
               </Reveal>
             ) : (
               <Reveal key={i}>
@@ -78,11 +78,11 @@ export default async function PostPage({ params }: Props) {
         <section className="border-t border-line">
           <div className="wrap py-16 sm:py-24">
             <h2 className="display text-[clamp(2rem,5vw,3.5rem)]">
-              Keep <span className="serif">reading</span>
+              Keep <span className="hl-soft">reading</span>
             </h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {related.map((r) => (
-                <Link key={r.id} href={`/blog/${r.slug}`} className="group grid grid-cols-[120px_1fr] items-center gap-5 rounded-[28px] bg-white p-3 ring-1 ring-line sm:grid-cols-[180px_1fr]">
+                <Link key={r.id} href={`/blog/${r.slug}`} className="group grid grid-cols-[120px_1fr] items-center gap-5 rounded-[20px] bg-white p-3 ring-1 ring-line sm:grid-cols-[180px_1fr]">
                   <div className="aspect-square overflow-hidden rounded-[20px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={r.cover} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />

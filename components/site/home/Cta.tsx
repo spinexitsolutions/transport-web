@@ -21,7 +21,7 @@ export function Cta({ title, subtitle, phone }: { title: string; subtitle: strin
         <motion.div style={{ scale, borderRadius: radius }} className="absolute inset-0 bg-accent" />
         <motion.div style={{ y: textY, opacity }} className="wrap relative text-center text-accent-ink">
           <h2 className="display mx-auto max-w-5xl text-[clamp(3rem,10vw,9rem)]">
-            {head} <span className="serif">{tail}</span>
+            {head} <span className="text-signal">{tail}</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-lg opacity-75">{subtitle}</p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">

@@ -13,7 +13,7 @@ const STYLES = [
 function IntroPreview({ v }: { v: Row }) {
   const words = (v.words as string[]) ?? [];
   return (
-    <div className="overflow-hidden rounded-[22px] border border-line bg-white">
+    <div className="overflow-hidden rounded-[16px] border border-line bg-white">
       <div className="eyebrow border-b border-line px-5 py-3 text-muted">At a glance</div>
       <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-night text-white">
         <div className={cn("text-center", !v.enabled && "opacity-30")}>

@@ -28,7 +28,7 @@ export function Tracking() {
         <div>
           <SectionLabel index="05">Visibility</SectionLabel>
           <h2 className="display mt-6 text-[clamp(2.6rem,6.5vw,5.5rem)]">
-            <SplitWords text="Your freight," /> <SplitWords text="live in your pocket." wordClassName="serif text-accent" delay={0.2} />
+            <SplitWords text="Your freight," /> <SplitWords text="live in your pocket." wordClassName="hl" delay={0.2} />
           </h2>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
             Minute-by-minute location, proactive delay alerts, e-POD and temperature logs — on web, WhatsApp and API.

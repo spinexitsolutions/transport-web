@@ -11,7 +11,7 @@ export function PageHero({ label, title, accent, subtitle, children }: { label: 
         {accent && (
           <>
             {" "}
-            <SplitWords text={accent} wordClassName="serif text-accent" animateOnMount delay={0.25} />
+            <SplitWords text={accent} wordClassName="hl" animateOnMount delay={0.25} />
           </>
         )}
       </h1>

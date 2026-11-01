@@ -32,7 +32,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] bg-white p-5 ring-1 ring-line sm:p-8">
+    <div className="relative overflow-hidden rounded-[20px] bg-white p-5 ring-1 ring-line sm:p-8">
       <AnimatePresence mode="wait" initial={false}>
         {state === "done" ? (
           <motion.div key="ok" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-[420px] flex-col items-center justify-center text-center">
@@ -45,7 +45,7 @@ export function ContactForm() {
               <Check size={28} strokeWidth={2.5} />
             </motion.span>
             <h3 className="display mt-6 text-3xl">
-              Message <span className="serif">received.</span>
+              Message <span className="hl-soft">received.</span>
             </h3>
             <p className="mt-3 max-w-sm text-muted">Our team usually replies within an hour during business hours. Keep an eye on your inbox.</p>
           </motion.div>

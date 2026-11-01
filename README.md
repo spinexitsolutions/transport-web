@@ -3,6 +3,11 @@
 A demo website for a logistics and transport company, built with **Next.js 15 (App Router)**, **Tailwind CSS v4**, **Framer Motion** and **Lenis** smooth scroll.
 It's designed mobile-first. Every piece of content, plus the intro animation, can be edited from the admin panel.
 
+**Design system**
+- Type: *Archivo* at expanded width for headlines and labels, *Hanken Grotesk* for text — sans-serif only.
+- Colour: cool paper and blue-black ink, an electric ultramarine accent (changeable in admin) and a signal-lime highlight on dark surfaces.
+- A "freight manifest" visual language: faint column rules, crosshair section tags, barcode details and live data strips.
+
 ## Quick start
 
 ```bash
@@ -19,9 +24,10 @@ Copy `.env.example` to `.env.local` to change the admin credentials and the sess
 
 | Area | What it does |
 | --- | --- |
+| **Page transitions** | An accent curtain lifts and the new page eases in on every navigation. |
 | **Intro animation** | Full-screen loader with a 0→100 counter and cycling words. There are three styles (counter, wordmark, route), and by default it plays once per visit. You can toggle it, pick the style, and set the words and duration from the admin panel. Add `?intro=preview` to the URL to replay it. |
 | **Dynamic Island navbar** | One black capsule that changes shape. It shrinks while you scroll down and opens back out when you hover over it. On desktop, hovering **Services** opens a services menu inside the capsule with a tracking box. On mobile it becomes a full-screen menu. It also shows a live label for the section you're in and a scroll-progress ring. |
-| **Home** | Hero with headline reveal, an image that expands as you scroll, and live shipment chips. Then a client marquee, and a paragraph that lights up word by word as you scroll. Services scroll sideways on desktop and stack as cards on mobile. Stats counters, and a "how it works" section with a sticky image. A world network map with animated routes, and a phone mockup showing live tracking. An industries list with an image that follows the cursor, a fleet grid, the instant quote calculator, story-style testimonials, FAQ, blog posts, and a final CTA with an accent circle that grows as you scroll. |
+| **Home** | Hero with a live manifest strip and a headline that carries an image capsule. The capsule and the rolling word cycle through road, air, sea and rail; on scroll the capsule expands to full screen while the headline parts around it. Then a client marquee, and a paragraph that lights up word by word as you scroll. Services scroll sideways on desktop and stack as cards on mobile. Stats counters, and a "how it works" section with a sticky image. A world network map with animated routes, and a phone mockup showing live tracking. An industries list with an image that follows the cursor, a fleet grid, the instant quote calculator, story-style testimonials, FAQ, blog posts, and a final CTA with an accent circle that grows as you scroll. |
 | **Pages** | Services and a page for each service, shipment tracking (`/track?id=KNT-482019`), instant quote, about, blog list and articles, careers (with an apply form), contact, and a custom 404. |
 | **Lead capture** | Quote, contact, careers and newsletter forms all save into the CRM. |
 

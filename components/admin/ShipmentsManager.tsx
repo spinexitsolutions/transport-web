@@ -102,7 +102,7 @@ export function ShipmentsManager() {
             <button
               key={s.id}
               onClick={() => setEditing({ s, isNew: false })}
-              className="group rounded-[22px] border border-line bg-white p-5 text-left transition hover:border-ink/25 hover:shadow-[0_16px_40px_-20px_rgba(0,0,0,.3)]"
+              className="group rounded-[16px] border border-line bg-white p-5 text-left transition hover:border-ink/25 hover:shadow-[0_16px_40px_-20px_rgba(0,0,0,.3)]"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-[13px] font-semibold">{s.id}</span>

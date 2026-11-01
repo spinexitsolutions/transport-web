@@ -56,7 +56,7 @@ export default async function Dashboard() {
         <div>
           <div className="eyebrow mb-2 text-muted">{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}</div>
           <h1 className="text-[30px] font-semibold tracking-[-0.04em] sm:text-[40px]">
-            Good day. <span className="serif font-normal text-muted">Here&apos;s the pulse.</span>
+            Good day. <span className="hl-soft text-muted">Here&apos;s the pulse.</span>
           </h1>
         </div>
         <div className="flex gap-2">
@@ -73,7 +73,7 @@ export default async function Dashboard() {
           return (
             <div
               key={k.label}
-              className={`min-w-[210px] snap-start rounded-[22px] border p-5 ${k.dark ? "border-ink bg-ink text-white" : "border-line bg-white"}`}
+              className={`min-w-[210px] snap-start rounded-[16px] border p-5 ${k.dark ? "border-ink bg-ink text-white" : "border-line bg-white"}`}
             >
               <div className="flex items-center justify-between">
                 <span className={`text-[13px] ${k.dark ? "text-white/60" : "text-muted"}`}>{k.label}</span>
@@ -90,7 +90,7 @@ export default async function Dashboard() {
 
       {/* charts */}
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <div className="rounded-[22px] border border-line bg-white p-5 sm:p-6">
+        <div className="rounded-[16px] border border-line bg-white p-5 sm:p-6">
           <div className="flex items-baseline justify-between">
             <h2 className="font-semibold tracking-tight">Inbound leads</h2>
             <span className="text-xs text-muted">Last 14 days</span>
@@ -120,7 +120,7 @@ export default async function Dashboard() {
           </svg>
         </div>
 
-        <div className="rounded-[22px] border border-line bg-white p-5 sm:p-6">
+        <div className="rounded-[16px] border border-line bg-white p-5 sm:p-6">
           <div className="flex items-baseline justify-between">
             <h2 className="font-semibold tracking-tight">Pipeline by stage</h2>
             <span className="text-xs text-muted">Deal value</span>
@@ -148,7 +148,7 @@ export default async function Dashboard() {
 
       {/* lists */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-[22px] border border-line bg-white p-5 sm:p-6">
+        <div className="rounded-[16px] border border-line bg-white p-5 sm:p-6">
           <div className="mb-3 flex items-baseline justify-between">
             <h2 className="font-semibold tracking-tight">Recent leads</h2>
             <Link href="/admin/leads" className="text-[13px] text-muted hover:text-ink">
@@ -183,7 +183,7 @@ export default async function Dashboard() {
           </ul>
         </div>
 
-        <div className="rounded-[22px] border border-line bg-white p-5 sm:p-6">
+        <div className="rounded-[16px] border border-line bg-white p-5 sm:p-6">
           <div className="mb-3 flex items-baseline justify-between">
             <h2 className="font-semibold tracking-tight">Live shipments</h2>
             <Link href="/admin/shipments" className="text-[13px] text-muted hover:text-ink">
@@ -216,7 +216,7 @@ export default async function Dashboard() {
           { label: "Applications", value: applications.length, href: "/admin/applications" },
           { label: "Subscribers", value: subscribers.length, href: "/admin/subscribers" },
         ].map((x) => (
-          <Link key={x.label} href={x.href} className="rounded-[22px] border border-line bg-white p-4 transition hover:border-ink/25 sm:p-5">
+          <Link key={x.label} href={x.href} className="rounded-[16px] border border-line bg-white p-4 transition hover:border-ink/25 sm:p-5">
             <div className="text-[12px] text-muted sm:text-[13px]">{x.label}</div>
             <div className="mt-1 text-2xl font-semibold tracking-tight">{x.value}</div>
           </Link>

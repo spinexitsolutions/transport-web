@@ -12,8 +12,9 @@ import { IconBtn, Loading, PageHeader, Toggle } from "./ui";
 const HERO_FIELDS: FieldDef[] = [
   { name: "eyebrow", label: "Eyebrow", type: "text" },
   { name: "titleLine1", label: "Title — line 1", type: "text", half: true },
-  { name: "titleAccent", label: "Accent word (serif italic)", type: "text", half: true },
-  { name: "titleLine2", label: "Title — line 2", type: "text" },
+  { name: "titleLine2", label: "Title — line 2 (after the image capsule)", type: "text", half: true },
+  { name: "modes", label: "Rotating words (line 3)", type: "stringList", hint: "e.g. road, air, sea, rail" },
+  { name: "modeImages", label: "Capsule images — one URL per rotating word", type: "stringList" },
   { name: "subtitle", label: "Subtitle", type: "textarea", rows: 3 },
   { name: "primaryCta", label: "Primary button", type: "text", half: true },
   { name: "secondaryCta", label: "Secondary button", type: "text", half: true },
@@ -98,7 +99,7 @@ export function HomeEditor() {
 
       <div className="grid gap-5 xl:grid-cols-[1fr_400px]">
         <div className="space-y-5">
-          <section className="rounded-[22px] border border-line bg-white p-4 sm:p-6">
+          <section className="rounded-[16px] border border-line bg-white p-4 sm:p-6">
             <h2 className="text-[17px] font-semibold tracking-tight">Hero</h2>
             <p className="mb-5 mt-0.5 text-[13px] text-muted">The first thing every visitor sees.</p>
             {/* live mini preview */}
@@ -110,9 +111,9 @@ export function HomeEditor() {
               <div className="relative">
                 <div className="eyebrow text-white/60">{hero.eyebrow}</div>
                 <div className="display mt-3 text-[clamp(1.8rem,4vw,3rem)]">
-                  {hero.titleLine1} <span className="serif text-accent">{hero.titleAccent}</span>
+                  {hero.titleLine1}
                   <br />
-                  {hero.titleLine2}
+                  {hero.titleLine2} <span className="hl">{(hero.modes ?? [])[0]}.</span>
                 </div>
                 <p className="mt-3 max-w-md text-[13px] text-white/70">{hero.subtitle}</p>
                 <div className="mt-4 flex gap-2 text-[12px]">
@@ -124,13 +125,13 @@ export function HomeEditor() {
             <FieldGrid fields={HERO_FIELDS} row={hero as unknown as Row} onChange={(n, v) => setHero({ ...hero, [n]: v })} />
           </section>
 
-          <section className="rounded-[22px] border border-line bg-white p-4 sm:p-6">
+          <section className="rounded-[16px] border border-line bg-white p-4 sm:p-6">
             <h2 className="mb-5 text-[17px] font-semibold tracking-tight">Statement & call-to-action</h2>
             <FieldGrid fields={HOME_FIELDS} row={home as unknown as Row} onChange={(n, v) => setHome({ ...home, [n]: v })} />
           </section>
         </div>
 
-        <section className="self-start rounded-[22px] border border-line bg-white p-4 sm:p-6 xl:sticky xl:top-6">
+        <section className="self-start rounded-[16px] border border-line bg-white p-4 sm:p-6 xl:sticky xl:top-6">
           <h2 className="text-[17px] font-semibold tracking-tight">Sections</h2>
           <p className="mb-4 mt-0.5 text-[13px] text-muted">Drag to reorder. Toggle to show or hide.</p>
           <ol className="space-y-1.5">

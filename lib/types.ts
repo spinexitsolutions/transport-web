@@ -35,6 +35,8 @@ export type HeroContent = {
   image: string;
   primaryCta: string;
   secondaryCta: string;
+  modes: string[]; // rotating words in the headline (road, air, sea…)
+  modeImages: string[]; // one image per mode, shown in the headline capsule
 };
 
 export type HomeSectionId =

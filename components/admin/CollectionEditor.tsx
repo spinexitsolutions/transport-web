@@ -224,7 +224,7 @@ export function CollectionEditor(cfg: CollectionConfig) {
         {/* editor */}
         <div className={cn("min-w-0", !mobileEditing && "hidden lg:block")}>
           {current ? (
-            <div className="rounded-[22px] border border-line bg-white">
+            <div className="rounded-[16px] border border-line bg-white">
               <div className="sticky top-14 z-10 flex items-center gap-1 rounded-t-[22px] border-b border-line bg-white/90 px-3 py-2.5 backdrop-blur lg:top-0">
                 <IconBtn className="lg:hidden" onClick={() => setMobileEditing(false)} aria-label="Back">
                   <ArrowLeft size={17} />

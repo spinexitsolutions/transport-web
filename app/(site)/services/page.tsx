@@ -27,12 +27,12 @@ export default async function ServicesPage() {
         <div className="grid gap-4 lg:grid-cols-2">
           {[first, second].filter(Boolean).map((s, i) => (
             <Reveal key={s.id} delay={i * 0.08}>
-              <Link href={`/services/${s.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[32px] bg-ink text-white sm:aspect-[16/12]">
+              <Link href={`/services/${s.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-ink text-white sm:aspect-[16/12]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={s.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-8">
-                  <span className="glass-dark grid h-12 w-12 place-items-center rounded-2xl text-accent">
+                  <span className="glass-dark grid h-12 w-12 place-items-center rounded-2xl text-signal">
                     <Icon name={s.icon} size={22} />
                   </span>
                   <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-accent group-hover:text-accent-ink">
@@ -59,7 +59,7 @@ export default async function ServicesPage() {
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((s, i) => (
             <Reveal key={s.id} delay={(i % 3) * 0.08}>
-              <Link href={`/services/${s.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-40px_rgba(0,0,0,.35)]">
+              <Link href={`/services/${s.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[20px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-40px_rgba(0,0,0,.35)]">
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]" />
@@ -85,11 +85,11 @@ export default async function ServicesPage() {
       </section>
 
       <section className="wrap pb-28">
-        <Reveal className="relative overflow-hidden rounded-[32px] bg-ink px-6 py-14 text-white sm:px-12 sm:py-20">
+        <Reveal className="relative overflow-hidden rounded-[20px] bg-ink px-6 py-14 text-white sm:px-12 sm:py-20">
           <div className="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-accent/30 blur-[120px]" />
           <SectionLabel dark>Not sure which mode?</SectionLabel>
           <h2 className="display mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4.5rem)]">
-            Tell us the cargo. We&apos;ll design the <span className="serif text-accent">route.</span>
+            Tell us the cargo. We&apos;ll design the <span className="hl">route.</span>
           </h2>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href="/quote" variant="accent">Get instant quote</Button>

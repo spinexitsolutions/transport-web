@@ -1,25 +1,29 @@
 @import "tailwindcss";
-@import "@fontsource/instrument-serif/400.css";
-@import "@fontsource/instrument-serif/400-italic.css";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/hanken-grotesk/index.css";
 
 /* ───────── Design tokens ─────────
-   Bone & ink base, one loud "signal" accent (editable from admin → Site settings). */
+   Cool paper + blue-black ink, one electric accent (editable in admin → Site & brand)
+   and a "signal" lime used for accents on dark surfaces. */
 :root {
-  --accent: #ff5a1f;
-  --accent-ink: #0b0b0c;
-  --bone: #f3f1ec;
-  --bone-2: #e9e6df;
-  --ink: #0b0b0c;
-  --ink-2: #1a1a1c;
-  --night: #0a0b0d;
-  --muted: #6f6b64;
-  --line: rgba(11, 11, 12, 0.09);
+  --accent: #3a2eff;
+  --accent-ink: #ffffff;
+  --signal: #d4ff3f;
+  --bone: #efeeea;
+  --bone-2: #e4e2dc;
+  --ink: #0b0d17;
+  --ink-2: #171a26;
+  --night: #080a14;
+  --muted: #676a75;
+  --line: rgba(11, 13, 23, 0.1);
+  --accent-light: color-mix(in oklab, var(--accent) 55%, white);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
+  --color-signal: var(--signal);
   --color-bone: var(--bone);
   --color-bone-2: var(--bone-2);
   --color-ink: var(--ink);
@@ -27,9 +31,9 @@
   --color-night: var(--night);
   --color-muted: var(--muted);
   --color-line: var(--line);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "SF Pro Display", sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Archivo Variable", "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --breakpoint-xs: 26rem;
 }
@@ -45,7 +49,8 @@
     background: var(--bone);
     color: var(--ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    font-feature-settings: "ss01", "ss02";
+    letter-spacing: -0.005em;
     overflow-x: clip;
   }
   ::selection {
@@ -97,23 +102,50 @@ html.lenis body {
     }
   }
 
-  /* Display type — tight, confident, Apple-ish */
+  /* Display type — wide industrial grotesk (Archivo, expanded width) */
   .display {
-    font-weight: 560;
+    font-family: var(--font-display);
+    font-stretch: 118%;
+    font-weight: 680;
     letter-spacing: -0.045em;
-    line-height: 0.92;
+    line-height: 0.9;
   }
-  .serif {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+  /* Highlighted words inside headlines: accent on light, signal-lime on dark */
+  .hl {
+    color: var(--accent);
+  }
+  .bg-night .hl,
+  .bg-ink .hl,
+  .on-dark .hl {
+    color: var(--signal);
+  }
+  .bg-accent .hl {
+    color: inherit;
+    opacity: 0.7;
+  }
+  .hl-soft {
+    font-family: var(--font-display);
+    font-stretch: 100%;
+    font-weight: 500;
     letter-spacing: -0.02em;
   }
   .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 620;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+  .font-mono {
+    font-stretch: 112%;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+  /* Outlined display text */
+  .outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--stroke, var(--ink));
   }
 
   .glass {
@@ -211,4 +243,74 @@ html.lenis body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* ───────── Manifest grid ─────────
+   Faint structural column rules behind paper sections (dark sections cover them). */
+.manifest-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  --cols: 4;
+  --gutter: 1rem;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--line) 0 1px,
+    transparent 1px calc((100% - 1px) / var(--cols))
+  );
+  background-position: var(--gutter) 0;
+  background-size: calc(100% - 2 * var(--gutter) + 1px) 100%;
+  background-repeat: no-repeat;
+  opacity: 0.55;
+}
+@media (min-width: 640px) {
+  .manifest-grid {
+    --gutter: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .manifest-grid {
+    --cols: 12;
+    --gutter: max(2.5rem, calc((100% - 1440px) / 2 + 2.5rem));
+  }
+}
+
+/* crosshair marker */
+.cross {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+}
+.cross::before,
+.cross::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.cross::before {
+  left: 5px;
+  top: 0;
+  width: 1px;
+  height: 11px;
+}
+.cross::after {
+  top: 5px;
+  left: 0;
+  height: 1px;
+  width: 11px;
+}
+
+/* barcode decoration */
+.barcode {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0 2px,
+    transparent 2px 4px,
+    currentColor 4px 5px,
+    transparent 5px 8px,
+    currentColor 8px 11px,
+    transparent 11px 12px
+  );
 }

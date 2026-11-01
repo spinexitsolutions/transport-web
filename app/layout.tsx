@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import { get } from "@/lib/db";
 import "./globals.css";
 
@@ -16,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#f3f1ec",
+  themeColor: "#efeeea",
   width: "device-width",
   initialScale: 1,
 };
@@ -24,7 +22,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const s = await get("settings");
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <style>{`:root{--accent:${s.accent};--accent-ink:${s.accentInk};}`}</style>
       </head>

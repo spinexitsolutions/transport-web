@@ -30,7 +30,7 @@ export function Footer({ settings, nav, services }: { settings: SiteSettings; na
           <div className="lg:col-span-5">
             <p className="display text-[clamp(2rem,5vw,3.5rem)]">
               {settings.footerNote.split(" ").slice(0, -2).join(" ")}{" "}
-              <span className="serif text-accent">{settings.footerNote.split(" ").slice(-2).join(" ")}</span>
+              <span className="hl">{settings.footerNote.split(" ").slice(-2).join(" ")}</span>
             </p>
             <Newsletter />
           </div>
@@ -106,7 +106,7 @@ export function Footer({ settings, nav, services }: { settings: SiteSettings; na
               <motion.span
                 key={i}
                 variants={{ hidden: { y: "100%" }, show: { y: "0%", transition: { duration: 1.1, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] } } }}
-                className={i === letters.length - 1 ? "text-accent" : "text-white/[0.92]"}
+                className={i === letters.length - 1 ? "text-signal" : "text-white/[0.92]"}
               >
                 {l}
               </motion.span>
@@ -167,7 +167,7 @@ function Newsletter() {
           placeholder="you@company.com"
           className="w-full min-w-0 bg-transparent px-4 text-[15px] placeholder:text-white/30 focus:outline-none"
         />
-        <button className="grid h-10 min-w-24 shrink-0 place-items-center rounded-full bg-white px-4 text-sm font-medium text-ink transition hover:bg-accent">
+        <button className="grid h-10 min-w-24 shrink-0 place-items-center rounded-full bg-white px-4 text-sm font-medium text-ink transition hover:bg-signal">
           {state === "loading" ? <Loader2 size={16} className="animate-spin" /> : state === "done" ? <Check size={16} /> : "Subscribe"}
         </button>
       </div>

@@ -131,7 +131,7 @@ export function TrackWidget({ initialId }: { initialId?: string }) {
             className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_1fr]"
           >
             {/* Summary */}
-            <div className="overflow-hidden rounded-[28px] bg-ink p-5 text-white sm:p-8">
+            <div className="overflow-hidden rounded-[20px] bg-ink p-5 text-white sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="font-mono text-sm text-white/60">{data.id}</div>
                 <span
@@ -200,7 +200,7 @@ export function TrackWidget({ initialId }: { initialId?: string }) {
             </div>
 
             {/* Timeline */}
-            <div className="rounded-[28px] bg-white p-5 ring-1 ring-line sm:p-8">
+            <div className="rounded-[20px] bg-white p-5 ring-1 ring-line sm:p-8">
               <div className="eyebrow text-muted">Journey</div>
               <ol className="relative mt-6">
                 {data.events.map((ev, i) => (

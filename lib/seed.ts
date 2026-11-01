@@ -146,8 +146,8 @@ export const seed: DB = {
     brandName: "Kinetik",
     brandSuffix: "Logistics",
     tagline: "Freight that moves like it means it.",
-    accent: "#FF5A1F",
-    accentInk: "#0B0B0C",
+    accent: "#3A2EFF",
+    accentInk: "#FFFFFF",
     email: "hello@kinetik.in",
     phone: "+91 22 4000 2026",
     whatsapp: "+91 98200 02026",
@@ -173,15 +173,17 @@ export const seed: DB = {
     oncePerSession: true,
   },
   hero: {
-    eyebrow: "Logistics, re-engineered",
-    titleLine1: "Move what",
-    titleAccent: "matters,",
-    titleLine2: "on time.",
+    eyebrow: "India's freight control tower",
+    titleLine1: "Freight that",
+    titleAccent: "",
+    titleLine2: "moves by",
     subtitle:
-      "One partner for road, air, ocean and warehousing — orchestrated by a 24×7 control tower and visible to you down to the last kilometre.",
+      "One partner for road, air, sea, rail and warehousing — orchestrated by a 24×7 control tower and visible to you down to the last kilometre.",
     image: img(IMG.truckMono, 2400),
     primaryCta: "Get instant quote",
     secondaryCta: "Track shipment",
+    modes: ["road", "air", "sea", "rail"],
+    modeImages: [img(IMG.truckCanyon, 2400), img(IMG.planeApron, 2400), img(IMG.ship, 2400), img(IMG.rail, 2400)],
   },
   home: {
     statement:

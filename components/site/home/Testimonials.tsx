@@ -81,9 +81,9 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
           >
             <blockquote className="lg:col-span-9">
               <p className="text-[clamp(1.7rem,4.4vw,3.8rem)] font-medium leading-[1.1] tracking-[-0.035em]">
-                <span className="serif text-accent">&ldquo;</span>
+                <span className="hl">&ldquo;</span>
                 {t.quote}
-                <span className="serif text-accent">&rdquo;</span>
+                <span className="hl">&rdquo;</span>
               </p>
             </blockquote>
             <figcaption className="flex items-center gap-4 lg:col-span-3 lg:flex-col lg:items-start lg:justify-end">

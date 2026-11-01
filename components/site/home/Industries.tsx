@@ -23,7 +23,7 @@ export function Industries({ industries }: { industries: Industry[] }) {
         <div>
           <SectionLabel index="06">Industries</SectionLabel>
           <h2 className="display mt-6 text-[clamp(2.6rem,7vw,6rem)]">
-            <SplitWords text="Built for" /> <SplitWords text="your sector." wordClassName="serif text-accent" delay={0.15} />
+            <SplitWords text="Built for" /> <SplitWords text="your sector." wordClassName="hl" delay={0.15} />
           </h2>
         </div>
         <p className="max-w-sm text-muted">Specialist teams, SOPs and equipment for the industries that keep India running.</p>

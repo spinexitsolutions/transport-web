@@ -231,7 +231,7 @@ export function AdminShell({ brand, children }: { brand: string; children: React
         </main>
 
         {/* mobile tab bar */}
-        <nav className="glass fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-[22px] border border-line px-2 py-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,.25)] lg:hidden">
+        <nav className="glass fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-[16px] border border-line px-2 py-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,.25)] lg:hidden">
           {TABS.map((t) => {
             const active = t.href === "/admin/content/home" ? path.startsWith("/admin/content") : isActive(path, t.href);
             const I = t.icon;

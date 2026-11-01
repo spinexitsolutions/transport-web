@@ -37,11 +37,11 @@ export default async function ContactPage() {
           return (
             <Reveal key={k} delay={i * 0.06}>
               {href ? (
-                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="group block h-full rounded-[28px] bg-white p-6 ring-1 ring-line transition-shadow hover:shadow-[0_30px_60px_-35px_rgba(0,0,0,.35)]">
+                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="group block h-full rounded-[20px] bg-white p-6 ring-1 ring-line transition-shadow hover:shadow-[0_30px_60px_-35px_rgba(0,0,0,.35)]">
                   {inner}
                 </a>
               ) : (
-                <div className="group h-full rounded-[28px] bg-white p-6 ring-1 ring-line">{inner}</div>
+                <div className="group h-full rounded-[20px] bg-white p-6 ring-1 ring-line">{inner}</div>
               )}
             </Reveal>
           );
@@ -52,7 +52,7 @@ export default async function ContactPage() {
         <Reveal>
           <ContactForm />
         </Reveal>
-        <Reveal delay={0.1} className="flex flex-col overflow-hidden rounded-[28px] bg-ink text-white">
+        <Reveal delay={0.1} className="flex flex-col overflow-hidden rounded-[20px] bg-ink text-white">
           <iframe
             title="Office location map"
             src="https://www.openstreetmap.org/export/embed.html?bbox=72.855%2C19.055%2C72.880%2C19.075&layer=mapnik&marker=19.0650%2C72.8680"

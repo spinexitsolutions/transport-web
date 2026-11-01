@@ -13,7 +13,7 @@ export function Process({ steps }: { steps: ProcessStep[] }) {
     <section data-nav-label="How it works" className="wrap py-20 sm:py-28">
       <SectionLabel index="03">How it works</SectionLabel>
       <h2 className="display mt-6 max-w-4xl text-[clamp(2.6rem,7vw,6rem)]">
-        <SplitWords text="From quote to" /> <SplitWords text="doorstep." wordClassName="serif text-accent" delay={0.2} />
+        <SplitWords text="From quote to" /> <SplitWords text="doorstep." wordClassName="hl" delay={0.2} />
       </h2>
 
       <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:gap-20">
@@ -23,7 +23,7 @@ export function Process({ steps }: { steps: ProcessStep[] }) {
           ))}
         </div>
         <div className="relative hidden lg:block">
-          <div className="sticky top-[14vh] h-[72vh] overflow-hidden rounded-[32px] bg-ink">
+          <div className="sticky top-[14vh] h-[72vh] overflow-hidden rounded-[20px] bg-ink">
             <AnimatePresence initial={false}>
               <motion.div
                 key={active}

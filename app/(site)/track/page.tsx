@@ -22,7 +22,7 @@ export default async function TrackPage({ searchParams }: { searchParams: Promis
           { icon: Bell, t: "Proactive alerts", d: "WhatsApp & email nudges the moment anything changes — before you have to ask." },
           { icon: ShieldCheck, t: "Proof of delivery", d: "OTP-verified handovers with photo e-POD, available instantly." },
         ].map(({ icon: I, t, d }, i) => (
-          <Reveal key={t} delay={i * 0.08} className="rounded-[28px] bg-white p-6 ring-1 ring-line">
+          <Reveal key={t} delay={i * 0.08} className="rounded-[20px] bg-white p-6 ring-1 ring-line">
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-bone">
               <I size={20} />
             </span>

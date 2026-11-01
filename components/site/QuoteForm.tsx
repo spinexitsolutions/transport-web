@@ -99,7 +99,7 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
   };
 
   return (
-    <div className={cn("overflow-hidden rounded-[28px] p-4 sm:p-6 lg:p-8", t.panel)}>
+    <div className={cn("overflow-hidden rounded-[20px] p-4 sm:p-6 lg:p-8", t.panel)}>
       {/* stepper */}
       <div className="mb-6 flex items-center gap-2">
         {["Shipment", "Details", "Done"].map((label, i) => (
@@ -302,7 +302,7 @@ export function QuoteForm({ services, dark }: { services: Svc[]; dark?: boolean 
               <Check size={36} strokeWidth={2.5} />
             </motion.div>
             <h3 className="display mt-6 text-3xl sm:text-4xl">
-              Rate locked, <span className="serif">{contact.name.split(" ")[0] || "friend"}.</span>
+              Rate locked, <span className="hl-soft">{contact.name.split(" ")[0] || "friend"}.</span>
             </h3>
             <p className={cn("mt-3 max-w-md", t.sub)}>
               A logistics specialist will confirm your booking within 30 minutes. Your estimate of{" "}

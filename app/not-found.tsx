@@ -13,7 +13,7 @@ export default function NotFound() {
         </span>
         <div className="eyebrow mt-8 text-muted">Tracking ID · KNT-404000</div>
         <h1 className="display mt-4 text-[clamp(2.5rem,8vw,6rem)]">
-          This page took a <span className="serif text-accent">wrong turn.</span>
+          This page took a <span className="hl">wrong turn.</span>
         </h1>
         <p className="mx-auto mt-5 max-w-md text-lg text-muted">
           Our control tower has looked everywhere. The shipment you&apos;re after isn&apos;t on this route — let&apos;s get you back on the highway.

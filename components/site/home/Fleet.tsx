@@ -18,11 +18,11 @@ export function Fleet({ fleet }: { fleet: FleetItem[] }) {
     <section data-nav-label="Fleet & assets" className="wrap py-20 sm:py-28">
       <SectionLabel index="07">Fleet & assets</SectionLabel>
       <h2 className="display mt-6 max-w-4xl text-[clamp(2.6rem,7vw,6rem)]">
-        <SplitWords text="Owned assets." /> <SplitWords text="Zero excuses." wordClassName="serif text-accent" delay={0.15} />
+        <SplitWords text="Owned assets." /> <SplitWords text="Zero excuses." wordClassName="hl" delay={0.15} />
       </h2>
       <div className="mt-12 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {fleet.map((f, i) => (
-          <Reveal key={f.id} delay={i * 0.07} className={`group relative overflow-hidden rounded-[28px] bg-ink text-white ${SPANS[i % SPANS.length]}`}>
+          <Reveal key={f.id} delay={i * 0.07} className={`group relative overflow-hidden rounded-[20px] bg-ink text-white ${SPANS[i % SPANS.length]}`}>
             <Image
               src={f.image}
               alt={f.name}

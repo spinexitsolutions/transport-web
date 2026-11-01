@@ -50,7 +50,7 @@ export default async function ServicePage({ params }: Props) {
       </section>
 
       <section className="mt-12 px-2 sm:mt-16 sm:px-4">
-        <ImageReveal src={s.image} alt={s.title} priority className="aspect-[4/5] rounded-[28px] sm:aspect-[21/9] sm:rounded-[40px]" />
+        <ImageReveal src={s.image} alt={s.title} priority className="aspect-[4/5] rounded-[20px] sm:aspect-[21/9] sm:rounded-[40px]" />
       </section>
 
       <section className="wrap grid gap-12 py-20 sm:py-28 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
@@ -99,7 +99,7 @@ export default async function ServicePage({ params }: Props) {
         <div className="wrap">
           <SectionLabel dark>Instant quote</SectionLabel>
           <h2 className="display mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4.5rem)]">
-            Price your <span className="serif text-accent">{s.title.toLowerCase()}</span> in seconds.
+            Price your <span className="hl">{s.title.toLowerCase()}</span> in seconds.
           </h2>
           <div className="mt-10">
             <QuoteForm services={quoteServices} dark />
@@ -117,7 +117,7 @@ export default async function ServicePage({ params }: Props) {
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {others.map((o, i) => (
             <Reveal key={o.id} delay={i * 0.08}>
-              <Link href={`/services/${o.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[28px] bg-ink text-white">
+              <Link href={`/services/${o.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-ink text-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={o.image} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-75 transition-transform duration-[1.2s] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />

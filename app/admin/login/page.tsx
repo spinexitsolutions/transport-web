@@ -19,7 +19,7 @@ export default async function LoginPage() {
             <h2 className="display text-[clamp(3rem,5vw,5rem)]">
               Every shipment,
               <br />
-              every lead, <span className="serif text-accent">one place.</span>
+              every lead, <span className="hl">one place.</span>
             </h2>
             <p className="mt-5 max-w-md text-white/65">Run the CRM, publish content and steer the whole website from a single, calm dashboard.</p>
           </div>

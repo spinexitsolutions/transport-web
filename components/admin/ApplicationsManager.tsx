@@ -71,7 +71,7 @@ export function ApplicationsManager() {
       {filtered.length === 0 ? (
         <Empty title="No applications" text="Applications submitted on the careers page appear here." />
       ) : (
-        <ul className="divide-y divide-line overflow-hidden rounded-[22px] border border-line bg-white">
+        <ul className="divide-y divide-line overflow-hidden rounded-[16px] border border-line bg-white">
           {filtered.map((a) => (
             <li key={a.id}>
               <button onClick={() => setOpen(a)} className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-bone/50 sm:px-5">

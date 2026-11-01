@@ -26,10 +26,10 @@ export default async function CareersPage() {
       <PageHero label="Careers" title="Build the network" accent="that moves India." subtitle={`${jobs.length} open roles across operations, technology, sales and sustainability.`} />
 
       <section className="grid grid-cols-2 gap-2 px-2 sm:grid-cols-[1.4fr_1fr] sm:gap-4 sm:px-4">
-        <ImageReveal src={img("1556761175-b413da4baf72", 1800)} alt="Team collaborating" priority className="col-span-2 aspect-[16/10] rounded-[28px] sm:col-span-1 sm:aspect-auto sm:min-h-[460px] sm:rounded-[36px]" />
+        <ImageReveal src={img("1556761175-b413da4baf72", 1800)} alt="Team collaborating" priority className="col-span-2 aspect-[16/10] rounded-[20px] sm:col-span-1 sm:aspect-auto sm:min-h-[460px] sm:rounded-[20px]" />
         <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-1 sm:grid-cols-1 sm:gap-4">
-          <ImageReveal src={img("1553413077-190dd305871c", 1000)} alt="Warehouse aisles" className="aspect-square rounded-[24px] sm:aspect-auto sm:min-h-[222px] sm:rounded-[36px]" />
-          <ImageReveal src={img("1551434678-e076c223a692", 1000)} alt="Engineers at work" className="aspect-square rounded-[24px] sm:aspect-auto sm:min-h-[222px] sm:rounded-[36px]" />
+          <ImageReveal src={img("1553413077-190dd305871c", 1000)} alt="Warehouse aisles" className="aspect-square rounded-[16px] sm:aspect-auto sm:min-h-[222px] sm:rounded-[20px]" />
+          <ImageReveal src={img("1551434678-e076c223a692", 1000)} alt="Engineers at work" className="aspect-square rounded-[16px] sm:aspect-auto sm:min-h-[222px] sm:rounded-[20px]" />
         </div>
       </section>
 
@@ -49,7 +49,7 @@ export default async function CareersPage() {
       <section className="wrap pb-28">
         <SectionLabel index="02">Open roles</SectionLabel>
         <h2 className="display mt-5 text-[clamp(2.25rem,6vw,4.5rem)]">
-          Find your <span className="serif text-accent">seat.</span>
+          Find your <span className="hl">seat.</span>
         </h2>
         <div className="mt-10">
           <JobsBoard jobs={jobs} />

@@ -43,7 +43,7 @@ export function Network({ hubs }: { hubs: Hub[] }) {
             <h2 className="display mt-6 text-[clamp(2.6rem,7vw,6rem)]">
               <SplitWords text="India-rooted." />
               <br />
-              <SplitWords text="World-connected." wordClassName="serif text-accent" delay={0.15} />
+              <SplitWords text="World-connected." wordClassName="hl" delay={0.15} />
             </h2>
           </div>
           <div className="grid grid-cols-3 gap-6 text-sm lg:gap-10">
@@ -64,8 +64,8 @@ export function Network({ hubs }: { hubs: Hub[] }) {
           <svg viewBox="0 0 1000 420" className="min-w-[760px] w-full" role="img" aria-label="Map of Kinetik's global hubs">
             <defs>
               <radialGradient id="glow">
-                <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+                <stop offset="0%" stopColor="var(--signal)" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="var(--signal)" stopOpacity="0" />
               </radialGradient>
             </defs>
             {dots.map(([x, y], i) => (
@@ -80,7 +80,7 @@ export function Network({ hubs }: { hubs: Hub[] }) {
                   <motion.path
                     d={d}
                     fill="none"
-                    stroke="var(--accent)"
+                    stroke="var(--signal)"
                     strokeWidth={1.4}
                     strokeLinecap="round"
                     initial={{ pathLength: 0, opacity: 0 }}
@@ -96,13 +96,13 @@ export function Network({ hubs }: { hubs: Hub[] }) {
             })}
             {hubs.map((h) => (
               <g key={h.id} onMouseEnter={() => setHover(h.id)} onMouseLeave={() => setHover(null)} className="cursor-pointer">
-                <circle cx={h.x} cy={h.y} r={h.primary ? 5 : 3.5} fill="var(--accent)" />
-                <circle cx={h.x} cy={h.y} r={h.primary ? 5 : 3.5} fill="none" stroke="var(--accent)" strokeWidth={1}>
+                <circle cx={h.x} cy={h.y} r={h.primary ? 5 : 3.5} fill="var(--signal)" />
+                <circle cx={h.x} cy={h.y} r={h.primary ? 5 : 3.5} fill="none" stroke="var(--signal)" strokeWidth={1}>
                   <animate attributeName="r" from={h.primary ? 5 : 3.5} to={h.primary ? 18 : 12} dur="2.2s" repeatCount="indefinite" />
                   <animate attributeName="opacity" from="0.9" to="0" dur="2.2s" repeatCount="indefinite" />
                 </circle>
                 {h.primary && (
-                  <text x={h.x + 9} y={h.y - 8} fill="rgba(255,255,255,.8)" fontSize={11} fontFamily="var(--font-geist-mono)">
+                  <text x={h.x + 9} y={h.y - 8} fill="rgba(255,255,255,.8)" fontSize={11} fontFamily="var(--font-display)">
                     {h.city.toUpperCase()}
                   </text>
                 )}
@@ -118,7 +118,7 @@ export function Network({ hubs }: { hubs: Hub[] }) {
               onMouseEnter={() => setHover(h.id)}
               onMouseLeave={() => setHover(null)}
               onClick={() => setHover((v) => (v === h.id ? null : h.id))}
-              className={`rounded-full px-4 py-2 text-sm transition ${hover === h.id ? "bg-accent text-accent-ink" : "bg-white/[0.07] text-white/75 hover:bg-white/15"}`}
+              className={`rounded-full px-4 py-2 text-sm transition ${hover === h.id ? "bg-signal text-ink" : "bg-white/[0.07] text-white/75 hover:bg-white/15"}`}
             >
               {h.city}
               <span className="ml-2 text-xs opacity-50">{h.country}</span>

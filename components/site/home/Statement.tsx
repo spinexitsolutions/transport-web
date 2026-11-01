@@ -28,7 +28,7 @@ function Word({ children, progress, range, accent }: { children: string; progres
   const opacity = useTransform(progress, range, [0.12, 1]);
   const y = useTransform(progress, range, [6, 0]);
   return (
-    <motion.span style={{ opacity, y }} className={`mr-[0.25em] ${accent ? "serif text-accent" : ""}`}>
+    <motion.span style={{ opacity, y }} className={`mr-[0.25em] ${accent ? "hl" : ""}`}>
       {children}
     </motion.span>
   );

@@ -189,7 +189,7 @@ export function LeadsBoard() {
                   if (id) setLeadStatus(id, stage.id);
                 }}
                 className={cn(
-                  "flex w-[82vw] max-w-[300px] shrink-0 snap-start flex-col rounded-[22px] p-2 transition-colors sm:w-[280px]",
+                  "flex w-[82vw] max-w-[300px] shrink-0 snap-start flex-col rounded-[16px] p-2 transition-colors sm:w-[280px]",
                   dragOver === stage.id ? "bg-accent/15 ring-2 ring-accent" : "bg-[#ebe8e1]",
                 )}
               >
@@ -255,7 +255,7 @@ export function LeadsBoard() {
       ) : filtered.length === 0 ? (
         <Empty title="No leads match" text="Try clearing the filters." />
       ) : (
-        <div className="overflow-hidden rounded-[22px] border border-line bg-white">
+        <div className="overflow-hidden rounded-[16px] border border-line bg-white">
           <div className="overflow-x-auto" data-lenis-prevent>
             <table className="w-full min-w-[820px] text-left text-[14px]">
               <thead className="border-b border-line bg-bone/60 text-[12px] text-muted">

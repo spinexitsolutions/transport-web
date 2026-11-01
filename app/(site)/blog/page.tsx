@@ -18,7 +18,7 @@ export default async function BlogPage() {
       {featured && (
         <section className="wrap pb-16">
           <Reveal>
-            <Link href={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-[32px] bg-ink text-white lg:grid-cols-[1.4fr_1fr]">
+            <Link href={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-[20px] bg-ink text-white lg:grid-cols-[1.4fr_1fr]">
               <div className="relative aspect-[16/11] overflow-hidden lg:aspect-auto lg:min-h-[480px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={featured.cover} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105" />
@@ -36,7 +36,7 @@ export default async function BlogPage() {
                   <span>
                     {featured.author} · {fmtDate(featured.date)} · {featured.readTime} min
                   </span>
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-accent">
+                  <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-signal">
                     <ArrowUpRight size={18} />
                   </span>
                 </div>

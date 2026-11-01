@@ -83,7 +83,7 @@ export function SingletonEditor({
       <div className={aside ? "grid gap-5 xl:grid-cols-[1fr_360px]" : ""}>
         <div className="space-y-5">
           {sections.map((s) => (
-            <section key={s.title} className="rounded-[22px] border border-line bg-white p-4 sm:p-6">
+            <section key={s.title} className="rounded-[16px] border border-line bg-white p-4 sm:p-6">
               <div className="mb-5">
                 <h2 className="text-[17px] font-semibold tracking-tight">{s.title}</h2>
                 {s.description && <p className="mt-0.5 text-[13px] text-muted">{s.description}</p>}

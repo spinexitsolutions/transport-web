@@ -14,9 +14,9 @@ export function Faq({ faqs, settings }: { faqs: FaqT[]; settings: SiteSettings }
       <div className="lg:col-span-5">
         <SectionLabel index="10">FAQ</SectionLabel>
         <h2 className="display mt-6 text-[clamp(2.6rem,6vw,5rem)]">
-          <SplitWords text="Questions," /> <SplitWords text="answered." wordClassName="serif text-accent" delay={0.15} />
+          <SplitWords text="Questions," /> <SplitWords text="answered." wordClassName="hl" delay={0.15} />
         </h2>
-        <div className="mt-10 rounded-[28px] bg-ink p-6 text-white">
+        <div className="mt-10 rounded-[20px] bg-ink p-6 text-white">
           <p className="text-lg tracking-tight">Still curious? Talk to a human — our control tower never sleeps.</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-ink">

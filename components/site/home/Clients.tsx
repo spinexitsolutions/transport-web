@@ -11,7 +11,7 @@ export function Clients({ clients }: { clients: Client[] }) {
             <span className="px-6 text-[clamp(1.6rem,4vw,2.6rem)] font-semibold tracking-[-0.04em] text-ink/25 transition-colors duration-300 hover:text-ink sm:px-10">
               {c.name}
             </span>
-            <span className="text-accent">✦</span>
+            <span className="cross text-accent" />
           </span>
         ))}
       </Marquee>

@@ -284,12 +284,12 @@ export function Navbar({ settings, nav, services }: { settings: SiteSettings; na
                         <div className="eyebrow opacity-70">Track</div>
                         <p className="mt-2 text-[17px] font-medium leading-tight tracking-tight">Where&apos;s my shipment?</p>
                       </div>
-                      <div className="mt-4 flex items-center rounded-full bg-black/10 p-1">
+                      <div className="mt-4 flex items-center rounded-full bg-white/15 p-1">
                         <input
                           value={trackId}
                           onChange={(e) => setTrackId(e.target.value)}
                           placeholder="KNT-482019"
-                          className="w-full min-w-0 bg-transparent px-3 text-[13px] placeholder:text-black/40 focus:outline-none"
+                          className="w-full min-w-0 bg-transparent px-3 text-[13px] placeholder:text-white/55 focus:outline-none"
                           aria-label="Tracking ID"
                         />
                         <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink text-white" aria-label="Track">
@@ -325,7 +325,7 @@ export function Navbar({ settings, nav, services }: { settings: SiteSettings; na
                         <Link href={n.href} className="group flex items-center justify-between py-3.5">
                           <span className={cn("display text-[2.1rem] sm:text-[2.4rem]", isActive(n.href) ? "text-white" : "text-white/70 group-hover:text-white")}>
                             {n.label}
-                            {isActive(n.href) && <span className="serif text-accent">.</span>}
+                            {isActive(n.href) && <span className="hl">.</span>}
                           </span>
                           <span className="font-mono text-xs text-white/30">0{i + 1}</span>
                         </Link>

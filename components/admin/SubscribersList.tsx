@@ -43,7 +43,7 @@ export function SubscribersList() {
       {filtered.length === 0 ? (
         <Empty title="No subscribers yet" text="Newsletter sign-ups from the site footer will appear here." />
       ) : (
-        <ul className="divide-y divide-line overflow-hidden rounded-[22px] border border-line bg-white">
+        <ul className="divide-y divide-line overflow-hidden rounded-[16px] border border-line bg-white">
           {filtered.map((s) => (
             <li key={s.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
               <div className="min-w-0 flex-1">

@@ -35,7 +35,7 @@ export default async function AboutPage() {
       <PageHero label={`About ${settings.brandName}`} title="We move freight." accent="Quietly. Perfectly." subtitle={`${settings.brandName} began with a simple idea: logistics should feel invisible to the people who depend on it.`} />
 
       <section className="px-2 sm:px-4">
-        <ImageReveal src={img("1600880292203-757bb62b4baf", 2400)} alt="The Kinetik team at work" priority className="aspect-[4/5] rounded-[28px] sm:aspect-[21/9] sm:rounded-[40px]" />
+        <ImageReveal src={img("1600880292203-757bb62b4baf", 2400)} alt="The Kinetik team at work" priority className="aspect-[4/5] rounded-[20px] sm:aspect-[21/9] sm:rounded-[40px]" />
       </section>
 
       <section className="wrap grid gap-10 py-20 sm:py-32 lg:grid-cols-[1fr_1.6fr]">
@@ -74,7 +74,7 @@ export default async function AboutPage() {
             { icon: HeartHandshake, t: "Partners, not vendors", d: "We win when our customers' customers are happy." },
             { icon: Leaf, t: "Lighter footprint", d: "Electric-first last mile and rail-first long haul." },
           ].map(({ icon: I, t, d }, i) => (
-            <Reveal key={t} delay={i * 0.07} className="group rounded-[28px] bg-white p-6 ring-1 ring-line transition-colors duration-500 hover:bg-ink hover:text-white">
+            <Reveal key={t} delay={i * 0.07} className="group rounded-[20px] bg-white p-6 ring-1 ring-line transition-colors duration-500 hover:bg-ink hover:text-white">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-bone text-ink transition-colors duration-500 group-hover:bg-accent group-hover:text-accent-ink">
                 <I size={20} />
               </span>
@@ -105,14 +105,14 @@ export default async function AboutPage() {
           <div>
             <SectionLabel index="04">Leadership</SectionLabel>
             <h2 className="display mt-5 text-[clamp(2.25rem,6vw,4.5rem)]">
-              The people <span className="serif">behind the</span> pallets.
+              The people <span className="hl-soft">behind the</span> pallets.
             </h2>
           </div>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {TEAM.map((p, i) => (
             <Reveal key={p.name} delay={i * 0.07} className="group">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-[24px] bg-ink/5">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-ink/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img(p.id, 800)} alt={p.name} loading="lazy" className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
               </div>
@@ -128,7 +128,7 @@ export default async function AboutPage() {
           {hubs.map((h) => (
             <span key={h.id} className="flex items-center gap-6 px-6">
               <span className="display text-[clamp(2.5rem,7vw,5rem)]">{h.city}</span>
-              <span className="serif text-[clamp(1.5rem,4vw,2.5rem)] text-muted">{h.country}</span>
+              <span className="hl-soft text-[clamp(1.5rem,4vw,2.5rem)] text-muted">{h.country}</span>
               <span className="h-3 w-3 rounded-full bg-accent" />
             </span>
           ))}
@@ -137,7 +137,7 @@ export default async function AboutPage() {
 
       <section className="wrap py-20 text-center sm:py-32">
         <h2 className="display mx-auto max-w-4xl text-[clamp(2.25rem,6vw,5rem)]">
-          Want to build the future of <span className="serif text-accent">freight</span> with us?
+          Want to build the future of <span className="hl">freight</span> with us?
         </h2>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button href="/careers">See open roles</Button>

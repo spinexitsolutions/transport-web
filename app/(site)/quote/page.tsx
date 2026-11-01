@@ -35,8 +35,8 @@ export default async function QuotePage() {
             </Reveal>
           ))}
           {t && (
-            <Reveal delay={0.3} className="rounded-[28px] bg-ink p-6 text-white">
-              <p className="serif text-2xl leading-snug">&ldquo;{t.quote}&rdquo;</p>
+            <Reveal delay={0.3} className="rounded-[20px] bg-ink p-6 text-white">
+              <p className="hl-soft text-2xl leading-snug">&ldquo;{t.quote}&rdquo;</p>
               <div className="mt-5 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t.avatar} alt="" className="h-10 w-10 rounded-full object-cover" />

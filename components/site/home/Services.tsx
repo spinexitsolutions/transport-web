@@ -19,7 +19,7 @@ export function Services({ services }: { services: Service[] }) {
           <h2 className="display mt-6 text-[clamp(2.6rem,7vw,6rem)]">
             <SplitWords text="Every mode." />
             <br />
-            <SplitWords text="One partner." wordClassName="serif text-accent" delay={0.15} />
+            <SplitWords text="One partner." wordClassName="hl" delay={0.15} />
           </h2>
         </div>
         <p className="max-w-sm text-muted">
@@ -60,11 +60,11 @@ function Desktop({ services }: { services: Service[] }) {
           ))}
           <Link
             href="/services"
-            className="group grid h-[66vh] w-[28vw] min-w-[300px] place-items-center rounded-[32px] bg-ink text-white"
+            className="group grid h-[66vh] w-[28vw] min-w-[300px] place-items-center rounded-[20px] bg-ink text-white"
           >
             <span className="text-center">
               <span className="display block text-5xl">
-                All <span className="serif text-accent">services</span>
+                All <span className="hl">services</span>
               </span>
               <span className="mx-auto mt-6 grid h-14 w-14 place-items-center rounded-full bg-accent text-accent-ink transition-transform duration-500 group-hover:rotate-45">
                 <ArrowUpRight />
@@ -90,7 +90,7 @@ function Card({ s, i, progress, total }: { s: Service; i: number; progress: Moti
   return (
     <Link
       href={`/services/${s.slug}`}
-      className="group relative h-[66vh] w-[34vw] min-w-[340px] max-w-[520px] overflow-hidden rounded-[32px] bg-ink text-white"
+      className="group relative h-[66vh] w-[34vw] min-w-[340px] max-w-[520px] overflow-hidden rounded-[20px] bg-ink text-white"
     >
       <motion.div style={{ x: imgX }} className="absolute -inset-x-[14%] inset-y-0">
         <Image src={s.image} alt={s.title} fill sizes="40vw" className="object-cover opacity-80 transition duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105 group-hover:opacity-100" />
@@ -111,7 +111,7 @@ function Card({ s, i, progress, total }: { s: Service; i: number; progress: Moti
               <div className="text-white/50">{s.transitTime}</div>
               <div className="font-medium">from {inr(s.startingPrice)}/{s.priceUnit || "kg"}</div>
             </div>
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-accent">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-ink transition-all duration-500 group-hover:rotate-45 group-hover:bg-signal">
               <ArrowUpRight size={20} />
             </span>
           </div>
@@ -139,7 +139,7 @@ function StackCard({ s, i, total }: { s: Service; i: number; total: number }) {
   const dim = useTransform(scrollYProgress, [0, 1], [0, 0.45]);
   return (
     <div ref={ref} className="sticky h-[78svh]" style={{ top: `${80 + i * 10}px` }}>
-      <motion.div style={{ scale }} className="relative h-[68svh] origin-top overflow-hidden rounded-[28px] bg-ink text-white shadow-[0_-20px_40px_-20px_rgba(0,0,0,.35)]">
+      <motion.div style={{ scale }} className="relative h-[68svh] origin-top overflow-hidden rounded-[20px] bg-ink text-white shadow-[0_-20px_40px_-20px_rgba(0,0,0,.35)]">
         <Image src={s.image} alt={s.title} fill sizes="100vw" className="object-cover opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/85" />
         <motion.div style={{ opacity: dim }} className="absolute inset-0 bg-black" />

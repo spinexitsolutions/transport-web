@@ -41,10 +41,10 @@ function SocialsInput({ value, onChange }: { value: Social[]; onChange: (v: Soci
 }
 
 function BrandPreview({ v }: { v: Row }) {
-  const accent = String(v.accent || "#ff5a1f");
+  const accent = String(v.accent || "#3a2eff");
   const ink = String(v.accentInk || "#0b0b0c");
   return (
-    <div className="overflow-hidden rounded-[22px] border border-line bg-white">
+    <div className="overflow-hidden rounded-[16px] border border-line bg-white">
       <div className="eyebrow border-b border-line px-5 py-3 text-muted">Live preview</div>
       <div className="space-y-4 p-5">
         <div className="flex items-center justify-between rounded-full bg-ink/90 py-1.5 pl-4 pr-1.5 text-white">
@@ -58,7 +58,7 @@ function BrandPreview({ v }: { v: Row }) {
         </div>
         <div className="rounded-2xl bg-bone p-5">
           <div className="display text-[34px]">
-            Move what <span className="serif" style={{ color: accent }}>matters.</span>
+            Move what <span className="hl-soft" style={{ color: accent }}>matters.</span>
           </div>
           <p className="mt-2 text-[13px] text-muted">{String(v.tagline)}</p>
           <div className="mt-4 flex gap-2">

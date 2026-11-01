@@ -69,7 +69,7 @@ export function Button({
         <span
           className={cn(
             "grid h-9 w-9 place-items-center rounded-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-45",
-            variant === "accent" ? "bg-ink text-white" : variant === "ink" ? "bg-accent text-accent-ink" : "bg-ink text-white",
+            variant === "accent" ? "bg-signal text-ink" : variant === "ink" ? "bg-accent text-accent-ink" : "bg-ink text-white",
           )}
         >
           <ArrowUpRight size={16} strokeWidth={2.2} />
